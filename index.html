@@ -3,84 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One Service - Book Professional Services</title>
+    <title>One Service - Book Professional Services in India</title>
     <!-- Bootstrap CSS for responsiveness -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Google Fonts: Roboto -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             color: #333;
+            line-height: 1.6;
         }
         .hero-bg {
             background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             color: white;
-            padding: 100px 0;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff20"><polygon points="0,100 1000,0 1000,100"/></svg>');
+            background-size: cover;
         }
         .service-card {
-            transition: transform 0.2s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            background: white;
         }
         .service-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        .service-card img {
+            height: 200px;
+            object-fit: cover;
         }
         .category-btn {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
+            background: white;
+            border: 2px solid #e9ecef;
             color: #007bff;
             margin: 5px;
-            padding: 10px 20px;
-            border-radius: 25px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
         .category-btn:hover {
             background: #007bff;
             color: white;
+            border-color: #007bff;
+            transform: translateY(-2px);
         }
         .rating {
             color: #ffc107;
+            font-size: 0.9em;
+        }
+        .price-tag {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #28a745;
         }
         footer {
-            background: #f8f9fa;
-            padding: 40px 0;
-            margin-top: 50px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 60px 0 30px;
+            margin-top: 80px;
         }
-        /* Additional custom styles for other pages can be added here */
+        .section-title {
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .btn-primary {
+            background: #007bff;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .testimonial-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        /* Profile enhancements */
+        .provider-photo {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #007bff;
+        }
+        /* Booking form refinements */
+        .booking-form label {
+            font-weight: 500;
+            color: #495057;
+        }
     </style>
 </head>
 <body>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="#">One Service</a>
+        <a class="navbar-brand fw-bold fs-3" href="#home">
+            <i class="bi bi-lightning-charge-fill text-primary me-2"></i>One Service
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link fw-medium" href="#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link fw-medium" href="#services">Services</a></li>
+                <li class="nav-item"><a class="nav-link fw-medium" href="#contact">Contact</a></li>
+                <li class="nav-item"><a class="nav-link fw-medium" href="#dashboard">Dashboard</a></li>
+                <li class="nav-item ms-3"><a class="btn btn-outline-primary px-4 rounded-pill" href="#book">Book Now</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
 <!-- Home Page -->
-<section id="home" class="hero-bg text-center">
-    <div class="container">
-        <h1 class="display-4 fw-bold mb-4">Find & Book Professional Services</h1>
-        <p class="lead mb-4">Electricity, Plumbing, Beauty & More – At Your Doorstep</p>
+<section id="home" class="hero-bg text-center position-relative">
+    <div class="container position-relative">
+        <h1 class="display-3 fw-bold mb-4">Book Trusted Professionals</h1>
+        <p class="lead mb-5 fs-4">Expert Services for Home & Personal Care – Delivered Across India</p>
         <!-- Search Bar -->
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Search for a service...">
-                    <button class="btn btn-light" type="button">Search</button>
+            <div class="col-lg-8">
+                <div class="input-group mb-4">
+                    <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" class="form-control border-0 py-3 fs-5" placeholder="Search services like Plumbing, Haircut...">
+                    <button class="btn btn-light btn-lg px-4" type="button"><i class="bi bi-arrow-right"></i></button>
                 </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4 text-center">
+                <i class="bi bi-check-circle-fill fs-1 text-white-50"></i>
+                <h6 class="fw-medium mt-2">Verified Providers</h6>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="bi bi-shield-fill-check fs-1 text-white-50"></i>
+                <h6 class="fw-medium mt-2">Secure Payments</h6>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="bi bi-clock-fill fs-1 text-white-50"></i>
+                <h6 class="fw-medium mt-2">Instant Booking</h6>
             </div>
         </div>
     </div>
@@ -89,41 +176,84 @@
 <!-- Featured Services -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5">Featured Services</h2>
-        <div class="row">
-            <div class="col-md-4 mb-4">
+        <h2 class="section-title">Featured Services</h2>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
                 <div class="card service-card h-100">
-                    <img src="https://via.placeholder.com/300x200?text=Electricity+Repair" class="card-img-top" alt="Electricity Repair">
-                    <div class="card-body">
-                        <h5 class="card-title">Electricity Repair</h5>
-                        <div class="rating mb-2">★★★★★ (4.8)</div>
-                        <p class="card-text">Expert electricians for all your wiring needs.</p>
-                        <p class="text-muted">Starting at $50</p>
-                        <a href="#book" class="btn btn-primary">Book Now</a>
+                    <img src="https://via.placeholder.com/400x200/007bff/white?text=Electricity+Repair" class="card-img-top" alt="Electricity Repair">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-semibold">Electricity Repair</h5>
+                        <div class="rating mb-2 d-flex align-items-center">
+                            <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i> 4.8
+                        </div>
+                        <p class="card-text flex-grow-1">Certified electricians for wiring, fixtures, and emergency repairs.</p>
+                        <div class="price-tag mb-3">Starting at <i class="bi bi-currency-rupee"></i>500</div>
+                        <a href="#" class="btn btn-primary mt-auto" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                            <i class="bi bi-calendar-check me-2"></i>Book Now
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-lg-4 col-md-6">
                 <div class="card service-card h-100">
-                    <img src="https://via.placeholder.com/300x200?text=Plumbing" class="card-img-top" alt="Plumbing">
-                    <div class="card-body">
-                        <h5 class="card-title">Plumbing</h5>
-                        <div class="rating mb-2">★★★★☆ (4.5)</div>
-                        <p class="card-text">Fix leaks and install fixtures quickly.</p>
-                        <p class="text-muted">Starting at $40</p>
-                        <a href="#book" class="btn btn-primary">Book Now</a>
+                    <img src="https://via.placeholder.com/400x200/28a745/white?text=Plumbing" class="card-img-top" alt="Plumbing">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-semibold">Plumbing</h5>
+                        <div class="rating mb-2 d-flex align-items-center">
+                            <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-half me-1"></i> 4.5
+                        </div>
+                        <p class="card-text flex-grow-1">Quick fixes for leaks, clogs, and installations.</p>
+                        <div class="price-tag mb-3">Starting at <i class="bi bi-currency-rupee"></i>400</div>
+                        <a href="#" class="btn btn-primary mt-auto" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                            <i class="bi bi-calendar-check me-2"></i>Book Now
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-lg-4 col-md-6">
                 <div class="card service-card h-100">
-                    <img src="https://via.placeholder.com/300x200?text=Haircut" class="card-img-top" alt="Haircut">
-                    <div class="card-body">
-                        <h5 class="card-title">Haircut</h5>
-                        <div class="rating mb-2">★★★★★ (4.9)</div>
-                        <p class="card-text">Professional styling at home.</p>
-                        <p class="text-muted">Starting at $30</p>
-                        <a href="#book" class="btn btn-primary">Book Now</a>
+                    <img src="https://via.placeholder.com/400x200/dc3545/white?text=Haircut" class="card-img-top" alt="Haircut">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-semibold">Haircut & Styling</h5>
+                        <div class="rating mb-2 d-flex align-items-center">
+                            <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i> 4.9
+                        </div>
+                        <p class="card-text flex-grow-1">Professional grooming services at your convenience.</p>
+                        <div class="price-tag mb-3">Starting at <i class="bi bi-currency-rupee"></i>300</div>
+                        <a href="#" class="btn btn-primary mt-auto" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                            <i class="bi bi-calendar-check me-2"></i>Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">What Our Customers Say</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-quote text-primary fs-1 me-3 mt-1"></i>
+                        <div>
+                            <p class="mb-2">"Prompt and reliable service. Fixed my plumbing issue in no time!"</p>
+                            <p class="fw-semibold text-muted mb-0">– Priya S., Mumbai</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-quote text-primary fs-1 me-3 mt-1"></i>
+                        <div>
+                            <p class="mb-2">"Excellent haircut at home. Highly recommend for busy professionals."</p>
+                            <p class="fw-semibold text-muted mb-0">– Raj K., Delhi</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -132,19 +262,37 @@
 </section>
 
 <!-- Categories Section -->
-<section class="py-5">
+<section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5">Browse Categories</h2>
+        <h2 class="section-title">Explore All Categories</h2>
         <div class="text-center">
-            <a href="#" class="btn category-btn">Electricity Repair</a>
-            <a href="#" class="btn category-btn">Plumbing</a>
-            <a href="#" class="btn category-btn">Haircut</a>
-            <a href="#" class="btn category-btn">House Cleaning</a>
-            <a href="#" class="btn category-btn">Pest Control</a>
-            <a href="#" class="btn category-btn">Carpentry</a>
-            <a href="#" class="btn category-btn">Waxing</a>
-            <a href="#" class="btn category-btn">Pain Relief</a>
-            <a href="#" class="btn category-btn">Stress Relief</a>
+            <a href="#" class="btn category-btn me-2 mb-2" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                <i class="bi bi-lightning-charge me-1"></i>Electricity Repair
+            </a>
+            <a href="#" class="btn category-btn me-2 mb-2" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                <i class="bi bi-water me-1"></i>Plumbing
+            </a>
+            <a href="#" class="btn category-btn me-2 mb-2" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                <i class="bi bi-scissors me-1"></i>Haircut
+            </a>
+            <a href="#" class="btn category-btn me-2 mb-2" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                <i class="bi bi-house-door me-1"></i>House Cleaning
+            </a>
+            <a href="#" class="btn category-btn me-2 mb-2" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                <i class="bi bi-bug me-1"></i>Pest Control
+            </a>
+            <a href="#" class="btn category-btn me-2 mb-2" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                <i class="bi bi-hammer me-1"></i>Carpentry
+            </a>
+            <a href="#" class="btn category-btn me-2 mb-2" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                <i class="bi bi-waxing me-1"></i>Waxing
+            </a>
+            <a href="#" class="btn category-btn me-2 mb-2" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                <i class="bi bi-heart-pulse me-1"></i>Pain Relief
+            </a>
+            <a href="#" class="btn category-btn me-2 mb-2" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                <i class="bi bi-emoji-smile me-1"></i>Stress Relief
+            </a>
         </div>
     </div>
 </section>
@@ -153,172 +301,211 @@
 <div class="modal fade" id="servicesModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Service Listings</h5>
+            <div class="modal-header border-0 pb-3">
+                <h5 class="modal-title fw-bold">Service Listings</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <select class="form-select">
-                            <option>Location</option>
-                            <option>New York</option>
-                            <option>Los Angeles</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select">
-                            <option>Rating</option>
-                            <option>4+ Stars</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select">
-                            <option>Price</option>
-                            <option>Low to High</option>
-                        </select>
+            <div class="modal-body p-0">
+                <div class="p-4 border-bottom">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option>All Locations</option>
+                                <option>Mumbai</option>
+                                <option>Delhi</option>
+                                <option>Bengaluru</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option>Any Rating</option>
+                                <option>4+ Stars</option>
+                                <option>5 Stars</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option>Price: Any</option>
+                                <option>Low to High</option>
+                                <option>High to Low</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-primary w-100">Apply Filters</button>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <!-- Sample Service Card -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card service-card">
-                            <img src="https://via.placeholder.com/400x200?text=House+Cleaning" class="card-img-top" alt="House Cleaning">
+                <div class="row g-4 p-4">
+                    <div class="col-lg-6">
+                        <div class="card service-card h-100">
+                            <img src="https://via.placeholder.com/500x250/f8f9fa/007bff?text=House+Cleaning" class="card-img-top" alt="House Cleaning">
                             <div class="card-body">
-                                <h5 class="card-title">House Cleaning</h5>
-                                <div class="rating mb-2">★★★★☆ (4.7)</div>
-                                <p class="text-muted">Starting at $60</p>
-                                <a href="#profile" class="btn btn-primary">View Provider</a>
+                                <h5 class="card-title fw-semibold">Deep House Cleaning</h5>
+                                <div class="rating mb-2 d-flex align-items-center">
+                                    <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-half me-1"></i> 4.7
+                                </div>
+                                <p class="text-muted">Thorough cleaning for homes and offices.</p>
+                                <div class="price-tag mb-3">Starting at <i class="bi bi-currency-rupee"></i>600</div>
+                                <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#profileModal" data-bs-dismiss="modal">
+                                    <i class="bi bi-eye me-2"></i>View Provider
+                                </a>
                             </div>
                         </div>
                     </div>
-                    <!-- Add more cards -->
+                    <!-- Add more cards as needed -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Booking System (Simple Form Demo) -->
+<!-- Booking System (Modal) -->
 <div class="modal fade" id="bookingModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Book Service</h5>
+            <div class="modal-header border-0 pb-3">
+                <h5 class="modal-title fw-bold">Book Your Service</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
+                <form class="booking-form">
+                    <div class="mb-4">
                         <label class="form-label">Select Service</label>
                         <select class="form-select">
                             <option>Electricity Repair</option>
                             <option>Plumbing</option>
-                            <!-- Add all categories -->
+                            <option>Haircut</option>
+                            <option>House Cleaning</option>
+                            <option>Pest Control</option>
+                            <option>Carpentry</option>
+                            <option>Waxing</option>
+                            <option>Pain Relief</option>
+                            <option>Stress Relief</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Date & Time</label>
-                        <input type="datetime-local" class="form-control">
+                    <div class="mb-4">
+                        <label class="form-label">Preferred Date & Time</label>
+                        <input type="datetime-local" class="form-control" min="2025-10-12T00:00">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Location</label>
-                        <input type="text" class="form-control" placeholder="Enter address">
+                    <div class="mb-4">
+                        <label class="form-label">Service Location</label>
+                        <input type="text" class="form-control" placeholder="Enter full address in India">
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label class="form-label">Payment Method</label>
-                        <select class="form-select">
-                            <option>Credit Card</option>
-                            <option>PayPal</option>
-                        </select>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment" id="card">
+                                <label class="form-check-label" for="card">
+                                    Credit/Debit Card <i class="bi bi-credit-card ms-1"></i>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment" id="upi">
+                                <label class="form-check-label" for="upi">
+                                    UPI <i class="bi bi-phone ms-1"></i>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment" id="paypal">
+                                <label class="form-check-label" for="paypal">
+                                    PayPal
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-success w-100">Confirm Booking</button>
+                    <button type="submit" class="btn btn-success w-100 rounded-pill py-3 fw-semibold">
+                        <i class="bi bi-check-circle me-2"></i>Confirm & Pay
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Service Provider Profile (Modal for demo) -->
+<!-- Service Provider Profile (Modal) -->
 <div class="modal fade" id="profileModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Provider Profile</h5>
+            <div class="modal-header border-0 pb-3">
+                <h5 class="modal-title fw-bold">Provider Profile</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <img src="https://via.placeholder.com/150?text=Photo" class="rounded-circle mb-3" alt="Provider Photo">
-                <h6>John Doe - Electrician</h6>
-                <p>Experienced electrician with 10+ years. Rated highly for reliability.</p>
-                <div class="rating mb-2">★★★★★ (4.9)</div>
-                <h6>Reviews</h6>
-                <p>"Great service!" - Customer A</p>
-                <h6>Pricing</h6>
-                <p>Starting at $50/hour</p>
-                <a href="#bookingModal" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal">Book Now</a>
+                <div class="text-center mb-4">
+                    <img src="https://via.placeholder.com/150/007bff/white?text=JD" class="provider-photo mx-auto" alt="Provider Photo">
+                </div>
+                <h5 class="fw-bold text-center mb-1">John Doe</h5>
+                <p class="text-center text-muted mb-4">Certified Electrician | 10+ Years Experience</p>
+                <p class="mb-3">Specializing in residential wiring, panel installations, and emergency repairs. Serving Mumbai and suburbs with a focus on safety and efficiency.</p>
+                <div class="rating mb-3 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i> 4.9 (127 Reviews)
+                </div>
+                <h6 class="fw-semibold mb-2">Recent Reviews</h6>
+                <div class="border-start border-3 border-primary ps-3 mb-3">
+                    <p class="text-muted small">"Professional and quick. Highly satisfied!" – Anita R. (Oct 2025)</p>
+                </div>
+                <h6 class="fw-semibold mb-2">Pricing Details</h6>
+                <ul class="list-unstyled">
+                    <li class="d-flex justify-content-between"><span>Basic Repair</span><span><i class="bi bi-currency-rupee"></i>500/hr</span></li>
+                    <li class="d-flex justify-content-between"><span>Full Installation</span><span><i class="bi bi-currency-rupee"></i>1,200</span></li>
+                </ul>
+                <button class="btn btn-primary w-100 mt-4" data-bs-toggle="modal" data-bs-target="#bookingModal" data-bs-dismiss="modal">
+                    <i class="bi bi-calendar-check me-2"></i>Book Now
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Customer Dashboard (Simple Table Demo) -->
+<!-- Customer Dashboard -->
 <section id="dashboard" class="py-5 bg-light">
     <div class="container">
-        <h2 class="mb-4">Customer Dashboard</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Booking ID</th>
-                    <th>Service</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>#001</td>
-                    <td>Electricity Repair</td>
-                    <td>2025-10-15</td>
-                    <td>Upcoming</td>
-                    <td><button class="btn btn-sm btn-warning">Reschedule</button> <button class="btn btn-sm btn-danger">Cancel</button> <button class="btn btn-sm btn-info">Rate</button></td>
-                </tr>
-                <tr>
-                    <td>#002</td>
-                    <td>House Cleaning</td>
-                    <td>2025-10-10</td>
-                    <td>Past</td>
-                    <td><button class="btn btn-sm btn-info">Rate</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</section>
-
-<!-- Admin Dashboard (Simple List Demo) -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="mb-4">Admin Dashboard</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <h6>Manage Services</h6>
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Electricity Repair
-                        <div><button class="btn btn-sm btn-outline-primary">Edit</button> <button class="btn btn-sm btn-outline-danger">Delete</button></div>
-                    </li>
-                    <!-- Add more -->
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h6>Manage Providers</h6>
-                <button class="btn btn-success mb-3">Add Provider</button>
-                <!-- Similar list -->
-            </div>
-            <div class="col-md-4">
-                <h6>View Bookings</h6>
-                <!-- Table similar to customer dashboard -->
+        <h2 class="section-title mb-4">Your Dashboard</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white border-0 pb-0">
+                        <h6 class="fw-semibold">Upcoming & Past Bookings</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Service</th>
+                                    <th>Date & Time</th>
+                                    <th>Provider</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#OS-001</td>
+                                    <td>Electricity Repair</td>
+                                    <td>Oct 15, 2025 | 2:00 PM</td>
+                                    <td>John Doe</td>
+                                    <td><span class="badge bg-warning text-dark">Upcoming</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-warning me-1"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-x"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#OS-002</td>
+                                    <td>House Cleaning</td>
+                                    <td>Oct 10, 2025 | 10:00 AM</td>
+                                    <td>Team Clean</td>
+                                    <td><span class="badge bg-secondary">Completed</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-info"><i class="bi bi-star"></i> Rate</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -327,53 +514,65 @@
 <!-- Contact Page -->
 <section id="contact" class="py-5">
     <div class="container">
-        <h2 class="text-center mb-5">Contact Us</h2>
-        <div class="row">
-            <div class="col-md-6">
+        <h2 class="section-title mb-5">Get in Touch</h2>
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <h5 class="fw-semibold mb-3">Send Us a Message</h5>
                 <form>
                     <div class="mb-3">
-                        <label class="form-label">Name</label>
-                        <input type="text" class="form-control">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" placeholder="Enter your name">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" placeholder="your@email.com">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Message</label>
-                        <textarea class="form-control" rows="5"></textarea>
+                        <textarea class="form-control" rows="4" placeholder="Tell us how we can help..."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Send</button>
+                    <button type="submit" class="btn btn-primary px-5">Send Message</button>
                 </form>
             </div>
-            <div class="col-md-6">
-                <h6>FAQ</h6>
+            <div class="col-lg-6">
+                <h5 class="fw-semibold mb-3">Frequently Asked Questions</h5>
                 <div class="accordion" id="faqAccordion">
-                    <div class="accordion-item">
+                    <div class="accordion-item border-0 shadow-sm mb-2">
                         <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                                How do I book a service?
+                            <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How do I book a service on One Service?
                             </button>
                         </h2>
-                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                Search for a service, select a provider, choose date/time, and pay.
+                                Simply search for your service, select a provider, choose a date and time, enter your location, and complete payment. You'll get instant confirmation via email and SMS.
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item">
+                    <div class="accordion-item border-0 shadow-sm mb-2">
                         <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                What payment methods are accepted?
+                            <button class="accordion-button collapsed fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What payment methods do you accept?
                             </button>
                         </h2>
                         <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                Credit card and PayPal.
+                                We support Credit/Debit Cards, UPI, and PayPal for secure transactions in INR.
                             </div>
                         </div>
                     </div>
-                    <!-- Add more FAQs -->
+                    <div class="accordion-item border-0 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Can I cancel or reschedule my booking?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes, free cancellations up to 24 hours before the appointment. Rescheduling is available in your dashboard.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -381,41 +580,58 @@
 </section>
 
 <!-- Footer -->
-<footer class="text-center">
+<footer class="text-center text-muted">
     <div class="container">
-        <p>&copy; 2025 One Service. All rights reserved.</p>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h6 class="fw-semibold text-dark mb-2">One Service</h6>
+                <p>Your trusted partner for professional home and personal services across India.</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6 class="fw-semibold text-dark mb-2">Quick Links</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#home" class="text-muted text-decoration-none">Home</a></li>
+                    <li><a href="#services" class="text-muted text-decoration-none">Services</a></li>
+                    <li><a href="#contact" class="text-muted text-decoration-none">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6 class="fw-semibold text-dark mb-2">Support</h6>
+                <p>Email: support@oneservice.in | Phone: +91 98765 43210</p>
+            </div>
+        </div>
+        <hr class="my-4">
+        <p>&copy; 2025 One Service Pvt. Ltd. All rights reserved. | GSTIN: 27ABCDE1234F1Z5</p>
     </div>
 </footer>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Basic JS for interactions -->
+<!-- Enhanced JS for interactions -->
 <script>
-    // Trigger modals for demos
-    document.querySelectorAll('.service-card a[href="#book"]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            new bootstrap.Modal(document.getElementById('bookingModal')).show();
-        });
-    });
-    document.querySelectorAll('.service-card a[href="#profile"]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            new bootstrap.Modal(document.getElementById('profileModal')).show();
-        });
-    });
-    document.querySelector('a[href="#services"]').addEventListener('click', () => {
-        new bootstrap.Modal(document.getElementById('servicesModal')).show();
+    // Booking confirmation simulation
+    document.querySelector('.booking-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Booking confirmed! You will receive a confirmation email and SMS shortly. Thank you for choosing One Service.');
+        bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
     });
 
-    // Notification simulation
-    function showNotification(message) {
-        // In a real app, use Web Push API or email
-        alert(message); // Placeholder
-    }
-    // Example: After booking
-    document.querySelector('#bookingModal form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        showNotification('Booking confirmed! You will receive an email.');
+    // Smooth scrolling for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
     });
+
+    // Notification placeholder (in real app, integrate email/SMS via backend)
+    function sendNotification(message) {
+        // Simulate push/email
+        console.log('Notification:', message);
+    }
 </script>
 
 </body>
