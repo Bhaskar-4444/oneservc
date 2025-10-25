@@ -57,9 +57,9 @@
  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
  // Import Auth functions
  import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
- // Import Firestore (though not used for booking yet)
+ // Import Firestore
  import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
- // 🛑 NEW: Import Realtime Database functions
+ // 🛑 Realtime Database functions
  import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
  // Firebase Configuration
@@ -67,7 +67,7 @@
   apiKey: "AIzaSyDbCpfja4Ly7kjNNNqy1L7i81CeAFtCDzU",
   authDomain: "oneserviice-d0270.firebaseapp.com",
   projectId: "oneserviice-d0270",
-  databaseURL: "https://oneserviice-d0270-default-rtdb.firebaseio.com", // 🛑 NEW: Required for Realtime DB
+  databaseURL: "https://oneserviice-d0270-default-rtdb.firebaseio.com", // 🛑 CORRECTION 1: Added mandatory databaseURL
   storageBucket: "oneserviice-d0270.firebasestorage.app",
   messagingSenderId: "591308815657",
   appId: "1:591308815657:web:aacb2188b2b94c92d24b38",
@@ -76,10 +76,10 @@
  window.firebaseApp = initializeApp(firebaseConfig);
  window.db = getFirestore(window.firebaseApp);
  window.auth = getAuth(window.firebaseApp);
- // 🛑 NEW: Initialize Realtime Database
+ // Initialize Realtime Database
  window.rtdb = getDatabase(window.firebaseApp);
 
- // Expose necessary Firebase auth functions
+ // Expose necessary Firebase functions
  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
  window.updateProfile = updateProfile;
@@ -224,7 +224,7 @@
  time: '',
  location: '',
  instructions: '',
- phone: '' // 🛑 NEW: Added phone field
+ phone: '' // Added phone field
  },
  user: null // Now populated by Firebase Auth
  };
@@ -354,7 +354,7 @@
  modalContainer.classList.remove('hidden');
  }
 
- // 🛑 NEW FUNCTION: Saves the booking data to Firebase Realtime Database
+ // FUNCTION: Saves the booking data to Firebase Realtime Database
  async function saveBookingToDB(bookingData) {
  try {
  const bookingsListRef = window.ref(window.rtdb, 'bookings');
@@ -864,8 +864,8 @@
  `;
  break;
  case 4:
- // 🛑 NEW ASYNC LOGIC: Saving to Firebase here
- const newBooking = {
+ // 🛑 ASYNC LOGIC: Data to save to Firebase
+ const newBookingData = {
   userId: appState.user ? appState.user.uid : 'guest_user',
   providerName: provider.name,
   providerId: provider.id,
@@ -881,18 +881,18 @@
  };
 
  // Save to Firebase
- saveBookingToDB(newBooking);
+ saveBookingToDB(newBookingData);
 
  // Update local mock data (for dashboard viewing)
- mockBookings.push({...newBooking, id: mockBookings.length + 101});
+ mockBookings.push({...newBookingData, id: mockBookings.length + 101});
 
  stepContent = `
  <div class="text-center p-8 bg-green-50 rounded-xl border border-green-300 professional-card">
  <div class="text-6xl text-green-600 mb-4">✅</div>
  <h4 class="text-3xl font-bold text-green-800 mb-4">Booking Confirmed!</h4>
  <p class="text-gray-700 text-lg mb-6">Your order has been successfully logged to our database. You will receive an SMS and email confirmation shortly.</p>
- <p class="text-xl font-semibold mb-2">${newBooking.serviceName} with ${newBooking.providerName}</p>
- <p class="text-lg text-gray-600 mb-8">${newBooking.date} at ${newBooking.time}</p>
+ <p class="text-xl font-semibold mb-2">${newBookingData.serviceName} with ${newBookingData.providerName}</p>
+ <p class="text-lg text-gray-600 mb-8">${newBookingData.date} at ${newBookingData.time}</p>
  <button onclick="navigateTo('dashboard')" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-300">Go to Dashboard</button>
  </div>
  `;
