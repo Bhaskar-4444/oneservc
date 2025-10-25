@@ -1,245 +1,1259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>OneServiice - Professional Service Marketplace (India)</title>
- <script src="https://cdn.tailwindcss.com"></script>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
- <style>
- @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
- body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f7f9fb;
- }
- ::-webkit-scrollbar {
-  width: 8px;
- }
- ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
- }
- ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
- }
- .professional-card {
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-              0 10px 10px -5px rgba(0, 0, 0, 0.04);
- }
- .professional-card:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-              0 10px 10px -5px rgba(0, 0, 0, 0.04);
- }
- .gradient-bg {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
- }
- .hero-bg {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-  url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=2071&amp;q=80');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
- }
- .search-overlay {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
- }
- .fade-in {
-  animation: fadeIn 0.6s ease-out;
- }
- @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
- }
- </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>OneServiice - Professional Service Marketplace (India)</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+ <style>
+ @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+ body {
+ font-family: 'Inter', sans-serif;
+ background-color: #f7f9fb; /* Light background */
+ }
+ /* Custom scrollbar for better appearance */
+ ::-webkit-scrollbar {
+ width: 8px;
+ }
+ ::-webkit-scrollbar-thumb {
+ background: #cbd5e1;
+ border-radius: 10px;
+ }
+ ::-webkit-scrollbar-thumb:hover {
+ background: #94a3b8;
+ }
+ /* Professional enhancements: Subtle gradients and improved shadows */
+ .professional-card {
+   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+ }
+ .professional-card:hover {
+   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+ }
+ .gradient-bg {
+   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+ }
+ /* New: Hero section background image similar to provided (cozy room with plants and chair) */
+ .hero-bg {
+   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80');
+   background-size: cover;
+   background-position: center;
+   background-repeat: no-repeat;
+ }
+ /* New: Search bar overlay with subtle background for inputs */
+ .search-overlay {
+   background: rgba(255, 255, 255, 0.95);
+   backdrop-filter: blur(10px);
+ }
+ .fade-in {
+   animation: fadeIn 0.6s ease-out;
+ }
+ @keyframes fadeIn {
+   from { opacity: 0; transform: translateY(20px); }
+   to { opacity: 1; transform: translateY(0); }
+ }
+ </style>
+ <script type="module">
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+ // Import Auth functions
+ import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+ // Import Firestore (though not used for booking yet)
+ import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+ // 🛑 NEW: Import Realtime Database functions
+ import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
- <!-- Firebase Integration -->
- <script type="module">
- import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
- import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
- import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
- import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+ // Firebase Configuration
+ const firebaseConfig = {
+  apiKey: "AIzaSyDbCpfja4Ly7kjNNNqy1L7i81CeAFtCDzU",
+  authDomain: "oneserviice-d0270.firebaseapp.com",
+  projectId: "oneserviice-d0270",
+  databaseURL: "https://oneserviice-d0270-default-rtdb.firebaseio.com", // 🛑 NEW: Required for Realtime DB
+  storageBucket: "oneserviice-d0270.firebasestorage.app",
+  messagingSenderId: "591308815657",
+  appId: "1:591308815657:web:aacb2188b2b94c92d24b38",
+  measurementId: "G-K3KKG8R8KN"
+ };
+ window.firebaseApp = initializeApp(firebaseConfig);
+ window.db = getFirestore(window.firebaseApp);
+ window.auth = getAuth(window.firebaseApp);
+ // 🛑 NEW: Initialize Realtime Database
+ window.rtdb = getDatabase(window.firebaseApp);
 
- const firebaseConfig = {
-  apiKey: "AIzaSyDbCpfja4Ly7kjNNNqy1L7i81CeAFtCDzU",
-  authDomain: "oneserviice-d0270.firebaseapp.com",
-  projectId: "oneserviice-d0270",
-  databaseURL: "https://oneserviice-d0270-default-rtdb.firebaseio.com/",
-  storageBucket: "oneserviice-d0270.appspot.com",
-  messagingSenderId: "591308815657",
-  appId: "1:591308815657:web:aacb2188b2b94c92d24b38",
-  measurementId: "G-K3KKG8R8KN"
- };
+ // Expose necessary Firebase auth functions
+ window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+ window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+ window.updateProfile = updateProfile;
+ window.signOut = signOut;
+ window.signInAnonymously = signInAnonymously;
+ window.push = push;
+ window.ref = ref;
+ window.set = set;
 
- // Initialize Firebase
- window.firebaseApp = initializeApp(firebaseConfig);
- window.db = getFirestore(window.firebaseApp);
- window.auth = getAuth(window.firebaseApp);
- window.rtdb = getDatabase(window.firebaseApp);
-
- // Expose Firebase functions
- window.signInWithEmailAndPassword = signInWithEmailAndPassword;
- window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
- window.updateProfile = updateProfile;
- window.signOut = signOut;
- window.signInAnonymously = signInAnonymously;
- window.push = push;
- window.ref = ref;
- window.set = set;
-
- // Auth State
- onAuthStateChanged(window.auth, (user) => {
-  if (user) {
-   appState.isLoggedIn = true;
-   appState.user = {
-    uid: user.uid,
-    name: user.displayName || (user.email ? user.email.split('@')[0] : "Guest"),
-    email: user.email,
-    role: 'customer'
-   };
-   console.log("User signed in:", appState.user);
-   if (appState.currentPage === 'login' || appState.currentPage === 'signup') {
-    navigateTo('dashboard');
-   }
-  } else {
-   appState.isLoggedIn = false;
-   appState.user = null;
-   console.log("User signed out");
-   if (appState.currentPage === 'dashboard') {
-    navigateTo('home');
-   }
-  }
- });
- </script>
+ // Auth State Listener
+ onAuthStateChanged(window.auth, (user) => {
+ if (user) {
+ appState.isLoggedIn = true;
+ appState.user = {
+ uid: user.uid,
+ name: user.displayName || user.email.split('@')[0],
+ email: user.email,
+ role: 'customer'
+ };
+ console.log("User signed in:", appState.user);
+ if (appState.currentPage === 'login' || appState.currentPage === 'signup') {
+ navigateTo('dashboard');
+ }
+ } else {
+ appState.isLoggedIn = false;
+ appState.user = null;
+ console.log("User signed out");
+ if (appState.currentPage === 'dashboard') {
+ navigateTo('home');
+ }
+ }
+ });
+ </script>
 </head>
-
 <body class="min-h-screen flex flex-col">
+ <header class="bg-white shadow-lg sticky top-0 z-40">
+ <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+ <h1 class="text-3xl font-extrabold text-blue-600">OneServiice</h1>
+ <div class="hidden md:flex space-x-8 text-gray-700 font-medium">
+ <a href="#" class="hover:text-blue-600 transition duration-150 text-lg" onclick="navigateTo('home')">Home</a>
+ <a href="#" class="hover:text-blue-600 transition duration-150 text-lg" onclick="navigateTo('listings')">Services</a>
+ <a href="#" class="hover:text-blue-600 transition duration-150 text-lg" onclick="navigateTo('howitworks')">Service Flow</a>
+ <a href="#" class="hover:text-blue-600 transition duration-150 text-lg" onclick="navigateTo('testimonials')">Reviews</a>
+ <a href="#" class="hover:text-blue-600 transition duration-150 text-lg" onclick="handleAuthClick()">Your Order</a>
+ <a href="#" class="hover:text-blue-600 transition duration-150 text-lg" onclick="navigateTo('about')">About Us</a>
+ <a href="#" class="hover:text-blue-600 transition duration-150 text-lg" onclick="navigateTo('faq')">Help & FAQ</a>
+ <button id="auth-button" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-150 font-semibold text-lg" onclick="handleAuthClick()">User Panel</button>
+ </div>
+ <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
+ <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+ </button>
+ </nav>
+ <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+ <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('home'); toggleMobileMenu()">Home</a>
+ <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('listings'); toggleMobileMenu()">Services</a>
+ <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('howitworks'); toggleMobileMenu()">Service Flow</a>
+ <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('testimonials'); toggleMobileMenu()">Reviews</a>
+ <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="handleAuthClick(); toggleMobileMenu()">Your Order</a>
+ <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('about'); toggleMobileMenu()">About Us</a>
+ <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('faq'); toggleMobileMenu()">Help & FAQ</a>
+ <button class="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="toggleMobileMenu(); handleAuthClick()">User Panel</button>
+ </div>
+ </header>
+ <main id="app-container" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"></main>
+ <footer class="bg-gray-900 text-white mt-12">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+ <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+ <div class="md:col-span-2">
+ <h3 class="text-2xl font-bold mb-4 text-blue-400">OneServiice</h3>
+ <p class="text-gray-300 mb-4 leading-relaxed">Connecting you with the best local professionals across India. From plumbing to therapy, we make home services simple, reliable, and affordable.</p>
+ <div class="flex space-x-4">
+ <a href="#" class="text-gray-400 hover:text-blue-400 transition duration-150"><i class="fab fa-facebook-f text-xl"></i></a>
+ <a href="#" class="text-gray-400 hover:text-blue-400 transition duration-150"><i class="fab fa-twitter text-xl"></i></a>
+ <a href="#" class="text-gray-400 hover:text-blue-400 transition duration-150"><i class="fab fa-instagram text-xl"></i></a>
+ <a href="#" class="text-gray-400 hover:text-blue-400 transition duration-150"><i class="fab fa-linkedin-in text-xl"></i></a>
+ </div>
+ </div>
+ <div>
+ <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+ <ul class="space-y-2 text-sm">
+ <li><a href="#" onclick="navigateTo('home')" class="text-gray-300 hover:text-blue-400 transition duration-150">Home</a></li>
+ <li><a href="#" onclick="navigateTo('listings')" class="text-gray-300 hover:text-blue-400 transition duration-150">Services</a></li>
+ <li><a href="#" onclick="navigateTo('howitworks')" class="text-gray-300 hover:text-blue-400 transition duration-150">Service Flow</a></li>
+ <li><a href="#" onclick="navigateTo('about')" class="text-gray-300 hover:text-blue-400 transition duration-150">About Us</a></li>
+ </ul>
+ </div>
+ <div>
+ <h4 class="text-lg font-semibold mb-4">Support</h4>
+ <ul class="space-y-2 text-sm">
+ <li><a href="#" onclick="navigateTo('faq')" class="text-gray-300 hover:text-blue-400 transition duration-150">Help & FAQ</a></li>
+ <li><a href="#" onclick="navigateTo('contact')" class="text-gray-300 hover:text-blue-400 transition duration-150">Contact Us</a></li>
+ <li><a href="#" class="text-gray-300 hover:text-blue-400 transition duration-150">Privacy Policy</a></li>
+ <li><a href="#" class="text-gray-300 hover:text-blue-400 transition duration-150">Terms of Service</a></li>
+ </ul>
+ </div>
+ </div>
+ <div class="border-t border-gray-700 pt-8 mb-8">
+ <h4 class="text-lg font-semibold mb-4">Get in Touch</h4
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+ <div>
+ <p class="text-gray-300 mb-2"><i class="fas fa-phone mr-2"></i> +91-8882648433</p>
+ <p class="text-gray-300"><i class="fas fa-envelope mr-2"></i> team.oneserviice@gmail.com.in</p>
+ </div>
+ <div>
+ <p class="text-gray-300 mb-2"><i class="fas fa-map-marker-alt mr-2"></i> NCR, Delhi</p>
+ <p class="text-gray-300">Serving 5+ cities across India</p>
+ </div>
+ <div>
+ <p class="text-gray-300 mb-2">Mon-Sun: 9AM - 9PM IST</p>
+ <p class="text-gray-300">24/7 Emergency Support</p>
+ </div>
+ </div>
+ </div>
+ <div class="text-center border-t border-gray-700 pt-6">
+ <p>&copy; 2025 OneServiice. All rights reserved.</p>
+ <p class="text-sm text-gray-400 mt-2">Designed with love for Indian homes | GSTIN: 27AAFCU1234Q1Z5</p>
+ </div>
+ </div>
+ </footer>
+ <div id="modal-container" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
+ <div id="modal-content" class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full">
+ <h3 id="modal-title" class="text-xl font-semibold mb-3 text-gray-900"></h3>
+ <p id="modal-body" class="text-gray-600 mb-6"></p>
+ <div class="flex justify-end space-x-3">
+ <button id="modal-cancel" class="px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition duration-150 hidden">Cancel</button>
+ <button id="modal-confirm" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150">OK</button>
+ </div>
+ </div>
+ </div>
+ <script>
+ // --- Global State and Mock Data (Localized for India) ---
+ // Global State Management
+ let appState = {
+ isLoggedIn: false, // Now managed by Firebase Auth
+ currentPage: 'home',
+ currentProvider: null,
+ currentBooking: {
+ providerId: null,
+ serviceName: '',
+ step: 1,
+ date: '',
+ time: '',
+ location: '',
+ instructions: '',
+ phone: '' // 🛑 NEW: Added phone field
+ },
+ user: null // Now populated by Firebase Auth
+ };
+ // Mock Service Categories
+ const categories = [
+ { id: 'app_elec', name: 'Appliance & Electrical Repair', icon: 'plug' },
+ { id: 'plumb', name: 'Plumbing & Leaks', icon: 'water' },
+ { id: 'clean', name: 'Deep House Cleaning', icon: 'broom' },
+ { id: 'pest', name: 'Pest Control', icon: 'bug' },
+ { id: 'carp', name: 'Carpentry & Assembly', icon: 'hammer' },
+ { id: 'salon_mass', name: 'Home Salon & Massage', icon: 'haircut' },
+ { id: 'ac', name: 'AC Repair & Service', icon: 'snowflake' },
+ { id: 'paint', name: 'House Painting', icon: 'paint' },
+ ];
+ const category_images = {
+  'paint':      'https://blog.75services.com/wp-content/uploads/2023/09/residential-painting-in-visakhapatnam.jpg', // UPDATED: Real Painting image
+  'carp':       'https://thumbs.dreamstime.com/b/focus-carpenter-young-indian-carpenter-polising-shaping-chariot-using-carpentry-tools-workplace-concept-focus-241193437.jpg',
+  'app_elec':   'https://5.imimg.com/data5/JC/HA/YA/SELLER-41468555/electrical-wiring-and-services-500x500.jpeg',
+  'clean':      'https://5.imimg.com/data5/SELLER/Default/2020/10/HE/ZN/IH/23787274/house-joy-deep-cleaning-services.jpg',
+  'pest':       'https://5.imimg.com/data5/SELLER/Default/2023/11/363792242/TF/WA/IK/2553956/pest-control-services-in-gurgaon.jpeg',
+  'salon_mass': 'https://hometriangle.com/blogs/content/images/2024/11/salonathome.jpg',
+  'ac':         'https://4.imimg.com/data4/EV/PQ/MY-25507092/ac-repair-in-agra.jpg',
+  'plumb':      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdhcSc0pPe34I2PMKMuvRTOvelfkm-AI_qyw&s'
+ };
 
- <!-- Navbar -->
- <header class="bg-white shadow-lg sticky top-0 z-40">
- <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
- <h1 class="text-3xl font-extrabold text-blue-600">OneServiice</h1>
- <div class="hidden md:flex space-x-8 text-gray-700 font-medium">
-  <a href="#" class="hover:text-blue-600 text-lg" onclick="navigateTo('home')">Home</a>
-  <a href="#" class="hover:text-blue-600 text-lg" onclick="navigateTo('listings')">Services</a>
-  <a href="#" class="hover:text-blue-600 text-lg" onclick="navigateTo('howitworks')">Service Flow</a>
-  <a href="#" class="hover:text-blue-600 text-lg" onclick="navigateTo('testimonials')">Reviews</a>
-  <a href="#" class="hover:text-blue-600 text-lg" onclick="handleAuthClick()">Your Order</a>
-  <a href="#" class="hover:text-blue-600 text-lg" onclick="navigateTo('about')">About Us</a>
-  <a href="#" class="hover:text-blue-600 text-lg" onclick="navigateTo('faq')">Help & FAQ</a>
-  <button id="auth-button" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold text-lg" onclick="handleAuthClick()">User Panel</button>
- </div>
- <button id="mobile-menu-button" class="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-md" onclick="toggleMobileMenu()">
-  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
- </button>
- </nav>
+ // Mock Service Providers with Indian names and realistic Indian pricing
+ const providers = [
+ { id: 1, name: 'Electrical services', categoryId: 'app_elec', price: 80, bio: 'Certified electricians specializing in residential wiring and fault diagnostics across NCR and Delhi.' },
+ { id: 11, name: 'General mechanics', categoryId: 'app_elec', price: 80, bio: 'Repair of washing machines, refrigerators, and microwaves at home.' },
+ { id: 2, name: 'Plumber service', categoryId: 'plumb', price: 80, bio: 'Fast, reliable plumbing service for leaks, clogs, and installations. 10 years experience.' },
+ { id: 4, name: 'Cleaning Services', categoryId: 'clean', price: 80, bio: 'Eco-friendly house cleaning services. Weekly, bi-weekly, or deep cleaning options.' },
+ { id: 5, name: 'Pests control', categoryId: 'pest', price: 80, bio: 'Residential and commercial pest control. Guaranteed removal of all common pests.' },
+ { id: 6, name: 'Carpenter service', categoryId: 'carp', price: 80, bio: 'Custom carpentry, repairs, and furniture assembly. Serving NCR & Delhi.' },
+ { id: 3, name: 'Haircut', categoryId: 'salon_mass', price: 80, bio: 'Modern and classic haircuts for men and women. Home service available in Rohini Delhi.' },
+ { id: 7, name: 'Therapy', categoryId: 'salon_mass', price: 80, bio: 'Certified therapist offering deep tissue and sports massage for pain relief.' },
+ { id: 9, name: 'AC Experts', categoryId: 'ac', price: 80, bio: 'Specialized AC installation, repair, and maintenance in major cities.' },
+ { id: 10, name: 'Painting service', categoryId: 'paint', price: 80, bio: 'Professional interior and exterior painting with paints.' },
+ ];
+ // Mock Bookings Data with Rupee prices
+ const mockBookings = [
+ { id: 101, providerName: 'Electrical services', serviceName: 'Appliance & Electrical Repair', date: '2025-10-25', time: '10:00 AM', status: 'Confirmed', price: 280, rating: 5 },
+ { id: 102, providerName: 'Cleaning Services', serviceName: 'Deep House Cleaning', date: '2025-11-05', time: '02:00 PM', status: 'Pending', price: 280, rating: null },
+ { id: 103, providerName: 'Plumber service', serviceName: 'Plumbing & Leaks', date: '2025-09-15', time: '09:00 AM', status: 'Completed', price: 280, rating: 4 },
+ ];
+ // Function to generate mock testimonials
+ function generateMockTestimonials(count = 120) {
+ const firstNames = ['Ravi', 'Priya', 'Amit', 'Neha', 'Suresh', 'Lata', 'Vikram', 'Meera', 'Rajesh', 'Sunita', 'Karan', 'Anita', 'Arjun', 'Deepa', 'Vikas', 'Shalini', 'Rahul', 'Pooja', 'Sanjay', 'Ritu'];
+ const lastNames = ['Kumar', 'Singh', 'Patel', 'Reddy', 'Menon', 'Desai', 'Joshi', 'Nair', 'Gupta', 'Bose', 'Malhotra', 'Sharma', 'Verma', 'Yadav', 'Chopra', 'Das', 'Roy', 'Mishra', 'Agarwal', 'Khan'];
+ const services = categories.map(c => c.name);
+ const locations = ['Rohini Sec-17, Delhi', 'Rohini Sec-18, Delhi', 'Rohini Sec-16, Delhi', 'Jor Bagh, Delhi', 'Shalimar Bagh, Delhi', 'Pitampura, Delhi', 'Model Town, Delhi', 'Sarita Vihar, Delhi', 'Saket, Delhi', 'Keshav Puram, Delhi', 'RK Puram, Delhi', 'Connaught Place, Delhi', 'South Extension, Delhi', 'Defence Colony, Delhi', 'Greater Kailash, Delhi', 'Vasant Kunj, Delhi', 'Dwarka, Delhi', 'Janakpuri, Delhi', 'Lajpat Nagar, Delhi', 'Karol Bagh, Delhi'];
+ const textTemplates = [
+ 'Amazing service! Fixed everything quickly and efficiently.',
+ 'Highly recommend! The professional was punctual and skilled.',
+ 'Great experience. Will book again soon.',
+ 'Exceeded expectations. Clean and professional.',
+ 'Very satisfied with the results. Thank you!',
+ 'Prompt response and excellent work.',
+ 'Made the process so easy. 5 stars!',
+ 'Reliable and affordable. Perfect for home needs.',
+ 'Thorough job done. No complaints.',
+ 'Professional attitude and quality service.'
+ ];
+ const ratings = [4.5, 5.0, 4.0, 4.8, 4.9, 5.0, 4.7, 4.6, 5.0, 4.2];
+ const dates = [];
+ for (let i = 0; i < count; i++) {
+ const date = new Date(2024 + Math.floor(Math.random() * 2), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
+ dates.push(date.toISOString().split('T')[0]);
+ }
+ const testimonials = [];
+ for (let i = 0; i < count; i++) {
+ const name = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+ const service = services[Math.floor(Math.random() * services.length)];
+ const rating = ratings[Math.floor(Math.random() * ratings.length)];
+ const text = `${textTemplates[Math.floor(Math.random() * textTemplates.length)]} Specifically for ${service.toLowerCase()}.`;
+ const location = locations[Math.floor(Math.random() * locations.length)];
+ const date = dates[i];
+ testimonials.push({
+ id: i + 1,
+ name: name,
+ service: service,
+ rating: rating,
+ text: text,
+ location: location,
+ date: date
+ });
+ }
+ return testimonials;
+ }
+ // Mock Testimonials - Generate 120 random reviews
+ const testimonials = generateMockTestimonials(120);
+ // --- Utility Functions ---
+ // Simple star rating HTML generator
+ function getRatingStars(rating) {
+ const fullStars = Math.floor(rating);
+ const halfStar = rating % 1 >= 0.5;
+ let stars = '';
+ for (let i = 0; i < fullStars; i++) {
+ stars += '<span class="text-yellow-400">★</span>';
+ }
+ if (halfStar) {
+ stars += '<span class="text-yellow-400">½</span>';
+ }
+ const emptyStars = 5 - Math.ceil(rating);
+ for (let i = 0; i < emptyStars; i++) {
+ stars += '<span class="text-gray-300">★</span>';
+ }
+ return stars;
+ }
+ // Custom Modal for alerts (Replaces alert() and confirm())
+ function showModal(title, body, onConfirm, showCancel = false) {
+ const modalContainer = document.getElementById('modal-container');
+ document.getElementById('modal-title').innerText = title;
+ document.getElementById('modal-body').innerText = body;
+ const confirmBtn = document.getElementById('modal-confirm');
+ const cancelBtn = document.getElementById('modal-cancel');
+ // Reset event listeners
+ confirmBtn.onclick = () => {
+ if (onConfirm) onConfirm();
+ modalContainer.classList.add('hidden');
+ };
+ if (showCancel) {
+ cancelBtn.classList.remove('hidden');
+ cancelBtn.onclick = () => modalContainer.classList.add('hidden');
+ } else {
+ cancelBtn.classList.add('hidden');
+ }
+ modalContainer.classList.remove('hidden');
+ }
 
- <!-- Mobile Menu -->
- <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
-  <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('home'); toggleMobileMenu()">Home</a>
-  <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('listings'); toggleMobileMenu()">Services</a>
-  <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('howitworks'); toggleMobileMenu()">Service Flow</a>
-  <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('testimonials'); toggleMobileMenu()">Reviews</a>
-  <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="handleAuthClick(); toggleMobileMenu()">Your Order</a>
-  <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('about'); toggleMobileMenu()">About Us</a>
-  <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="navigateTo('faq'); toggleMobileMenu()">Help & FAQ</a>
-  <button class="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 text-lg" onclick="toggleMobileMenu(); handleAuthClick()">User Panel</button>
- </div>
- </header>
+ // 🛑 NEW FUNCTION: Saves the booking data to Firebase Realtime Database
+ async function saveBookingToDB(bookingData) {
+ try {
+ const bookingsListRef = window.ref(window.rtdb, 'bookings');
+ const newBookingRef = window.push(bookingsListRef);
+ await window.set(newBookingRef, bookingData);
+ console.log("Booking saved successfully to Firebase:", newBookingRef.key);
+ return true;
+ } catch (error) {
+ console.error("Error saving booking to Firebase:", error);
+ return false;
+ }
+ }
 
- <main id="app-container" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <!-- Dynamic content will load here -->
- </main>
 
- <!-- Footer -->
- <footer class="bg-gray-900 text-white mt-12">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
- <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-  <div class="md:col-span-2">
-   <h3 class="text-2xl font-bold mb-4 text-blue-400">OneServiice</h3>
-   <p class="text-gray-300 mb-4 leading-relaxed">Connecting you with the best local professionals across India. From plumbing to therapy, we make home services simple, reliable, and affordable.</p>
-   <div class="flex space-x-4">
-    <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-facebook-f text-xl"></i></a>
-    <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-twitter text-xl"></i></a>
-    <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-instagram text-xl"></i></a>
-    <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-linkedin-in text-xl"></i></a>
-   </div>
-  </div>
+ // Authentication Functions
+ window.signInUser = async () => {
+ const email = document.getElementById('login-email').value;
+ const password = document.getElementById('login-password').value;
+ if (!email || !password) return showModal('Input Required', 'Please enter email and password.');
+ try {
+ await window.signInWithEmailAndPassword(window.auth, email, password);
+ } catch (error) {
+ showModal('Login Failed', error.message);
+ }
+ };
+ window.signUpUser = async () => {
+ const name = document.getElementById('signup-name').value;
+ const email = document.getElementById('signup-email').value;
+ const password = document.getElementById('signup-password').value;
+ const confirmPassword = document.getElementById('signup-confirm-password').value;
+ if (!name || !email || !password || !confirmPassword) return showModal('Input Required', 'Please fill all fields.');
+ if (password !== confirmPassword) return showModal('Error', 'Passwords do not match.');
+ try {
+ const userCredential = await window.createUserWithEmailAndPassword(window.auth, email, password);
+ await window.updateProfile(userCredential.user, { displayName: name });
+ } catch (error) {
+ showModal('Signup Failed', error.message);
+ }
+ };
+ window.signInAnonymouslyFunc = async () => {
+ try {
+ await window.signInAnonymously(window.auth);
+ navigateTo('home');
+ } catch (error) {
+ showModal('Error', error.message);
+ }
+ };
+ window.signOutUser = async () => {
+ try {
+ await window.signOut(window.auth);
+ } catch (error) {
+ showModal('Error', error.message);
+ }
+ };
+ function handleAuthClick() {
+ if (appState.isLoggedIn) {
+ navigateTo('dashboard');
+ } else {
+ navigateTo('login');
+ }
+ }
+ // --- Routing and View Rendering ---
+ function navigateTo(page, data = {}) {
+ appState.currentPage = page;
+ // Reset booking flow on non-booking pages
+ if (page !== 'booking') {
+ appState.currentBooking = {
+ providerId: null,
+ serviceName: '',
+ step: 1,
+ date: '',
+ time: '',
+ location: '',
+ instructions: '',
+ phone: ''
+ };
+ }
+ const container = document.getElementById('app-container');
+ container.innerHTML = '';
+ window.scrollTo(0, 0); // Scroll to top on navigation
+ switch (page) {
+ case 'home':
+ container.innerHTML = renderHomePage();
+ break;
+ case 'listings':
+ container.innerHTML = renderListingsPage(data.categoryId);
+ break;
+ case 'profile':
+ appState.currentProvider = providers.find(p => p.id === data.providerId);
+ container.innerHTML = renderProviderProfile(appState.currentProvider);
+ break;
+ case 'booking':
+ if (!appState.isLoggedIn) {
+ showModal('Login Required', 'Please sign in to book a service.', () => navigateTo('login'));
+ return;
+ }
+ container.innerHTML = renderBookingSystem();
+ break;
+ case 'dashboard':
+ if (!appState.isLoggedIn) {
+ navigateTo('login');
+ return;
+ }
+ container.innerHTML = renderCustomerDashboard();
+ break;
+ case 'login':
+ container.innerHTML = renderLoginPage();
+ break;
+ case 'signup':
+ container.innerHTML = renderSignupPage();
+ break;
+ case 'about':
+ container.innerHTML = renderAboutPage();
+ break;
+ case 'howitworks':
+ container.innerHTML = renderHowItWorksPage();
+ break;
+ case 'faq':
+ container.innerHTML = renderFAQPage();
+ break;
+ case 'contact':
+ container.innerHTML = renderContactPage();
+ break;
+ case 'testimonials':
+ container.innerHTML = renderTestimonialsPage();
+ break;
+ default:
+ container.innerHTML = '<h2>404 Page Not Found</h2>';
+ }
+ // Add fade-in animation to new content
+ container.classList.add('fade-in');
+ }
+ // --- Page Render Functions ---
+ function renderLoginPage() {
+ return `
+ <div class="max-w-md mx-auto bg-white p-8 rounded-xl shadow-2xl border border-gray-100 professional-card">
+ <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Welcome Back</h2>
+ <p class="text-center text-gray-600 mb-8">Sign in to your account</p>
+ <div class="space-y-4">
+ <div>
+ <label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+ <input type="email" id="login-email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ </div>
+ <div>
+ <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+ <input type="password" id="login-password" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ </div>
+ <button onclick="signInUser()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-300">Sign In</button>
+ </div>
+ <div class="mt-6 text-center">
+ <p class="text-gray-600">Don't have an account? <a href="#" onclick="navigateTo('signup'); return false;" class="text-blue-600 hover:underline">Sign up</a></p>
+ </div>
+ <div class="mt-4 text-center">
+ <button onclick="signInAnonymouslyFunc()" class="text-blue-600 hover:underline text-sm">Continue as Guest</button>
+ </div>
+ <div class="mt-6 text-center">
+ <button onclick="navigateTo('home')" class="text-gray-600 hover:underline text-sm">Back to Home</button>
+ </div>
+ </div>
+ `;
+ }
+ function renderSignupPage() {
+ return `
+ <div class="max-w-md mx-auto bg-white p-8 rounded-xl shadow-2xl border border-gray-100 professional-card">
+ <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Create Account</h2>
+ <p class="text-center text-gray-600 mb-8">Join OneServiice today</p>
+ <div class="space-y-4">
+ <div>
+ <label for="signup-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+ <input type="text" id="signup-name" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ </div>
+ <div>
+ <label for="signup-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+ <input type="email" id="signup-email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ </div>
+ <div>
+ <label for="signup-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+ <input type="password" id="signup-password" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ </div>
+ <div>
+ <label for="signup-confirm-password" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+ <input type="password" id="signup-confirm-password" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ </div>
+ <button onclick="signUpUser()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition duration-300">Sign Up</button>
+ </div>
+ <div class="mt-6 text-center">
+ <p class="text-gray-600">Already have an account? <a href="#" onclick="navigateTo('login'); return false;" class="text-blue-600 hover:underline">Sign in</a></p>
+ </div>
+ <div class="mt-4 text-center">
+ <button onclick="navigateTo('home')" class="text-gray-600 hover:underline text-sm">Back to Home</button>
+ </div>
+ </div>
+ `;
+ }
+ function renderHomePage() {
+ // Get 6 random testimonials for home page
+ const randomTestimonials = [];
+ const shuffled = [...testimonials].sort(() => 0.5 - Math.random());
+ for (let i = 0; i < 6; i++) {
+ randomTestimonials.push(shuffled[i]);
+ }
+ const homeReviewsHtml = randomTestimonials.map(t => `
+ <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 professional-card fade-in">
+ <div class="flex items-center mb-4">
+ <span class="text-yellow-400 text-lg mr-2">${getRatingStars(t.rating)}</span>
+ <span class="text-sm text-gray-500 ml-auto">${t.location}</span>
+ </div>
+ <p class="text-gray-700 mb-4 italic">"${t.text}"</p>
+ <div class="flex items-center">
+ <h4 class="font-bold text-gray-800">${t.name}</h4>
+ <p class="text-sm text-gray-500 ml-2">${t.service}</p>
+ </div>
+ <p class="text-xs text-gray-400 mt-2">${t.date}</p>
+ </div>
+ `).join('');
+ return `
+ <section class="hero-bg text-white rounded-xl p-8 md:p-16 mb-12 shadow-xl professional-card relative overflow-hidden">
+ <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+ <div class="max-w-4xl mx-auto text-center relative z-10">
+ <h2 class="text-4xl sm:text-5xl font-extrabold mb-4">Find Your Professional Service, Instantly.</h2>
+ <p class="text-xl mb-8 opacity-90">Vetted professionals for every home need, from plumbing to therapy, across India.</p>
+ <div class="bg-white p-2 rounded-full shadow-2xl flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 search-overlay">
+ <input type="text" placeholder="I need a service like 'Plumbing' or 'Cleaning'..." class="flex-grow p-3 sm:py-3 sm:px-5 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+ <input type="text" placeholder="Enter Location / Pincode" class="flex-grow p-3 sm:py-3 sm:px-5 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:max-w-xs" />
+ <button onclick="navigateTo('listings')" class="bg-blue-500 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-600 transition duration-300 shadow-lg">Search</button>
+ </div>
+ </div>
+ </section>
+ <section class="mb-12">
+ <h3 class="text-3xl font-bold text-gray-800 mb-6">Browse by Category</h3>
+ <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+   ${categories.map(c => {
+   // Create a visible fallback placeholder URL using the first two letters of the category name
+   const fallbackText = c.name.split(' ').map(n=>n.charAt(0)).join('');
+   const finalImageSrc = category_images[c.id] || `https://placehold.co/192x192/0a60ff/ffffff?text=${fallbackText}`;
+   return `
+   <div onclick="navigateTo('listings', {categoryId: '${c.id}'})" class="text-center p-4 sm:p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl hover:border-blue-500 border-2 border-transparent transition-all duration-300 cursor-pointer group transform hover:-translate-y-2 professional-card fade-in">
+     <div class="w-full aspect-square mx-auto mb-4 overflow-hidden rounded-2xl shadow-lg">
+       <img 
+         src="${finalImageSrc}" 
+         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+         alt="${c.name}" 
+         onerror="this.src='https://placehold.co/192x192/0a60ff/ffffff?text=${fallbackText}'; this.onerror=null;"
+       >
+     </div>
+     <p class="text-sm sm:text-lg font-semibold text-gray-800 leading-tight">${c.name}</p>
+   </div>
+   `}).join('')}
+ </div>
+</section>
+ <section class="mb-12">
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+ <div class="bg-white p-8 rounded-xl shadow-lg professional-card">
+ <h4 class="text-4xl font-extrabold text-blue-600 mb-2">1000+</h4>
+ <p class="text-gray-600">Happy Customers</p>
+ </div>
+ <div class="bg-white p-8 rounded-xl shadow-lg professional-card">
+ <h4 class="text-4xl font-extrabold text-blue-600 mb-2">50+</h4>
+ <p class="text-gray-600">Trained Professionals</p>
+ </div>
+ <div class="bg-white p-8 rounded-xl shadow-lg professional-card">
+ <h4 class="text-4xl font-extrabold text-blue-600 mb-2">5</h4>
+ <p class="text-gray-600">Cities Covered</p>
+ </div>
+ </div>
+ </section>
+ <section class="mb-12">
+ <div class="flex justify-between items-center mb-6">
+ <h3 class="text-3xl font-bold text-gray-800">Customer Reviews</h3>
+ <button onclick="navigateTo('testimonials')" class="text-blue-600 hover:underline font-semibold text-lg">See All Reviews</button>
+ </div>
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+ ${homeReviewsHtml}
+ </div>
+ </section>
+ `;
+ }
+ function renderListingsPage(categoryId) {
+ const filteredProviders = categoryId ? providers.filter(p => p.categoryId === categoryId) : providers;
+ const categoryName = categoryId ? categories.find(c => c.id === categoryId).name : 'All Services';
+ const locations = ['Rohini Sec-17, Delhi', 'Rohini Sec-18, Delhi', 'Rohini Sec-16, Delhi', 'Jor Bagh, Delhi', 'Shalimar Bagh, Delhi', 'Pitampura, Delhi', 'Model Town, Delhi', 'Sarita Vihar, Delhi', 'Saket, Delhi', 'Keshav Puram, Delhi', 'RK Puram, Delhi', 'Connaught Place, Delhi', 'South Extension, Delhi', 'Defence Colony, Delhi', 'Greater Kailash, Delhi', 'Vasant Kunj, Delhi', 'Dwarka, Delhi', 'Janakpuri, Delhi', 'Lajpat Nagar, Delhi', 'Karol Bagh, Delhi'];
+ const cityOptions = locations.map(loc => `<option>${loc}</option>`).join('');
+ return `
+ <h2 class="text-4xl font-bold text-gray-800 mb-8">${categoryName} Listings</h2>
+ <div class="flex flex-col lg:flex-row gap-8">
+ <aside class="w-full lg:w-1/4 bg-white p-6 rounded-xl shadow-lg border border-gray-100 professional-card mb-6 lg:mb-0">
+ <h3 class="text-xl font-semibold mb-4 text-gray-800">Filters</h3>
+ <div class="space-y-4">
+ <div class="border-b pb-4">
+ <p class="font-medium text-gray-700 mb-2">City</p>
+ <select class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ ${cityOptions}
+ </select>
+ </div>
+ <div class="border-b pb-4">
+ <p class="font-medium text-gray-700 mb-2">Minimum Rating</p>
+ <div class="flex items-center space-x-2">
+ <input type="radio" id="rating-4" name="rating" class="text-blue-600 focus:ring-blue-500">
+ <label for="rating-4" class="text-gray-700">4 Stars & Up</label>
+ </div>
+ <div class="flex items-center space-x-2">
+ <input type="radio" id="rating-5" name="rating" class="text-blue-600 focus:ring-blue-500">
+ <label for="rating-5" class="text-gray-700">5 Stars Only</label>
+ </div>
+ </div>
+ <div>
+ <p class="font-medium text-gray-700 mb-2">Price Range</p>
+ <input type="range" min="80" max="500" value="500" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
+ <div class="flex justify-between text-sm text-gray-500 mt-1"><span>₹80</span><span>₹500+</span></div>
+ </div>
+ </div>
+ </aside>
+ <div class="w-full lg:w-3/4 space-y-6">
+ ${filteredProviders.length > 0 ? filteredProviders.map(p => `
+ <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between border border-gray-100 professional-card fade-in">
+ <div class="flex-grow mb-4 md:mb-0">
+ <h3 class="text-2xl font-bold text-gray-800">${p.name}</h3>
+ <p class="text-blue-600 font-semibold mb-2">${categories.find(c => c.id === p.categoryId).name}</p>
+ <div class="flex items-center text-sm text-gray-600 mb-3">
+ <span class="mr-2">${getRatingStars(p.rating)}</span>
+ <span class="font-medium">${p.rating} (${p.reviews} reviews)</span>
+ </div>
+ <p class="text-gray-500 hidden sm:block">${p.bio.substring(0, 80)}...</p>
+ </div>
+ <div class="text-right flex flex-col items-start md:items-end">
+ <p class="text-3xl font-extrabold text-blue-800 mb-2">₹${p.price}<span class="text-base font-normal text-gray-500"> visiting</span></p>
+ <button onclick="navigateTo('profile', {providerId: ${p.id}})" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">Book Now</button>
+ </div>
+ </div>
+ `).join('') : `
+ <div class="bg-white p-10 rounded-xl shadow-lg text-center text-gray-500 professional-card">
+ <p class="text-xl font-semibold">No services found in this category.</p>
+ <button onclick="navigateTo('listings')" class="mt-4 text-blue-600 hover:underline">View All Services</button>
+ </div>
+ `}
+ </div>
+ </div>
+ `;
+ }
+ function renderProviderProfile(provider) {
+ if (!provider) return '<div class="text-center text-red-500">Provider not found.</div>';
+ const category = categories.find(c => c.id === provider.categoryId);
+ const mockReviews = [
+ { user: 'Ravi K.', rating: 5, text: 'Excellent service, professional and efficient. Highly recommend!', date: '2025-09-10' },
+ { user: 'Priya S.', rating: 4, text: 'Great work, communication was excellent.', date: '2025-08-20' },
+ ];
+ return `
+ <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+ <div class="lg:col-span-2 space-y-8">
+ <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-600 professional-card">
+ <div class="flex items-center space-x-6">
+ <img src="https://placehold.co/100x100/3b82f6/ffffff?text=${provider.name.charAt(0)}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/3b82f6/ffffff?text=P';" class="w-24 h-24 rounded-full object-cover shadow-md">
+ <div>
+ <h2 class="text-3xl font-bold text-gray-800">${provider.name}</h2>
+ <p class="text-xl font-semibold text-blue-600">${category.name} Specialist</p>
+ <div class="flex items-center mt-2">
+ <span class="text-yellow-400 text-lg mr-1">${getRatingStars(provider.rating)}</span>
+ <span class="text-gray-700 font-medium">(${provider.reviews} reviews)</span>
+ <span class="ml-4 text-sm text-green-600 font-semibold bg-green-100 px-2 py-0.5 rounded-full">Verified</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="bg-white p-6 rounded-xl shadow-lg professional-card">
+ <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">About the Provider</h3>
+ <p class="text-gray-700 leading-relaxed mb-4">${provider.bio} We are committed to punctuality, quality workmanship, and transparent pricing.</p>
+ <h4 class="text-xl font-semibold mt-6 mb-3 text-gray-800">Services & Visiting Charge</h4>
+ <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+ <li><strong>Visiting Charge:</strong> ₹${provider.price} + problem based charge</li>
+ <li><strong>Major Installation:</strong> Custom Quote (Contact for estimate)</li>
+ <li><strong>Emergency Call-out:</strong> ₹80 flat fee + problem based charge</li>
+ </ul>
+ <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+ <h5 class="font-semibold text-blue-800 mb-2">Visiting Charge Policy</h5>
+ <ol class="text-sm text-blue-700 space-y-1 list-decimal list-inside ml-2">
+ <li><strong>Visiting Charge – ₹80:</strong><br>A small visiting fee of ₹80 is applicable for every service request. This covers the technician’s inspection and basic consultation at your location.</li>
+ <li><strong>Adjusted in Final Bill:</strong><br>If the customer decides to proceed with the service or repair, the ₹80 visiting charge will be fully adjusted in the final service amount — meaning, no extra visit fee will be charged.</li>
+ <li><strong>Applicable Only if Work Not Done:</strong><br>If the customer chooses not to continue with the service after inspection, only the ₹80 visiting charge will be applicable as a minimal inspection fee.</li>
+ </ol>
+ </div>
+ </div>
+ <div class="bg-white p-6 rounded-xl shadow-lg professional-card">
+ <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Customer Reviews (${provider.reviews})</h3>
+ <div class="space-y-4">
+ ${mockReviews.map(r => `
+ <div class="border-b pb-4 last:border-b-0 fade-in">
+ <div class="flex justify-between items-center">
+ <div class="font-bold text-gray-800">${r.user}</div>
+ <div class="text-sm text-gray-500">${r.date}</div>
+ </div>
+ <div class="text-yellow-400 text-lg mb-2">${getRatingStars(r.rating)}</div>
+ <p class="text-gray-700">${r.text}</p>
+ </div>
+ `).join('')}
+ </div>
+ <button class="mt-4 text-blue-600 hover:underline font-medium">Read, Read All ${provider.reviews} Reviews</button>
+ </div>
+ </div>
+ <div class="lg:col-span-1">
+ <div class="sticky top-24 bg-white p-6 rounded-xl shadow-2xl border border-blue-200 professional-card">
+ <h3 class="text-3xl font-extrabold text-blue-800 mb-4">Book ${provider.name}</h3>
+ <p class="text-4xl font-extrabold text-gray-900 mb-6">From ₹${provider.price}<span class="text-xl font-normal text-gray-500"> visiting</span></p>
+ <label for="service-package" class="block text-sm font-medium text-gray-700 mb-2">Select Service Package</label>
+ <select id="service-package" class="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:ring-blue-500 focus:border-blue-500">
+ <option value="Visiting Charge - ${provider.price}">Visiting Charge - ₹${provider.price}</option>
+ <option value="Emergency Call - 80/flat">Emergency Call - ₹80 Flat</option>
+ </select>
+ <button onclick="startBooking(${provider.id}, document.getElementById('service-package').value)" class="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition duration-300 shadow-xl">
+ Proceed to Book
+ </button>
+ </div>
+ </div>
+ </div>
+ `;
+ }
+ // Function to initiate the booking flow
+ function startBooking(providerId, serviceName) {
+ if (!appState.isLoggedIn) {
+ showModal('Login Required', 'Please sign in to book a service.', () => navigateTo('login'));
+ return;
+ }
+ appState.currentBooking = {
+ providerId: providerId,
+ serviceName: serviceName,
+ step: 1,
+ date: '',
+ time: '',
+ location: '',
+ instructions: '',
+ phone: '' // Reset phone
+ };
+ navigateTo('booking');
+ }
+ function renderBookingSystem() {
+ const step = appState.currentBooking.step;
+ const provider = providers.find(p => p.id === appState.currentBooking.providerId);
+ const stepTitles = ["Choose Date & Time", "Enter Location & Details", "Review & Payment", "Confirmation"];
+ if (!provider) return '<div class="text-center text-red-500">Booking error: Provider not selected.</div>';
+ let stepContent = '';
+ switch (step) {
+ case 1:
+ stepContent = `
+ <h4 class="text-2xl font-semibold mb-4 text-gray-800">1. Select Date & Time</h4>
+ <label for="booking-date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+ <input type="date" id="booking-date" value="${appState.currentBooking.date}" required class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:ring-blue-500 focus:border-blue-500"/>
+ <label for="booking-time" class="block text-sm font-medium text-gray-700 mb-1">Time Slot</label>
+ <select id="booking-time" required class="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:ring-blue-500 focus:border-blue-500">
+ <option value="">-- Select a Time Slot --</option>
+ <option value="9:00 AM">9:00 AM - 11:00 AM</option>
+ <option value="1:00 PM">1:00 PM - 3:00 PM</option>
+ <option value="3:00 PM">3:00 PM - 5:00 PM</option>
+ </select>
+ <button onclick="nextBookingStep()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-300">Next: Location</button>
+ `;
+ break;
+ case 2:
+ stepContent = `
+ <h4 class="text-2xl font-semibold mb-4 text-gray-800">2. Enter Location & Details</h4>
+ <label for="booking-phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number (Required for confirmation)</label>
+ <input type="tel" id="booking-phone" placeholder="9876543210" value="${appState.currentBooking.phone}" required class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:ring-blue-500 focus:border-blue-500"/>
+ <label for="booking-location" class="block text-sm font-medium text-gray-700 mb-1">Service Address (Flat No, Society/Area, Pincode)</label>
+ <input type="text" id="booking-location" placeholder="A-402, Shiv Shanti Towers, 400001" value="${appState.currentBooking.location}" required class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:ring-blue-500 focus:border-blue-500"/>
+ <label for="booking-instructions" class="block text-sm font-medium text-gray-700 mb-1">Special Instructions (e.g., gate code, dog warning)</label>
+ <textarea id="booking-instructions" rows="4" class="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:ring-blue-500 focus:border-blue-500">${appState.currentBooking.instructions}</textarea>
+ <div class="flex space-x-4">
+ <button onclick="prevBookingStep()" class="flex-grow bg-gray-300 text-gray-800 py-3 rounded-lg font-bold hover:bg-gray-400 transition duration-300">Back</button>
+ <button onclick="nextBookingStep()" class="flex-grow bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-300">Next: Payment</button>
+ </div>
+ `;
+ break;
+ case 3:
+ const visitingCharge = 80;
+ const problemCharge = 200;
+ const price = visitingCharge + problemCharge;
+ const taxes = price * 0.18;
+ const total = price + taxes;
+ stepContent = `
+ <h4 class="text-2xl font-semibold mb-4 text-gray-800">3. Review & Payment</h4>
+ <div class="bg-gray-50 p-6 rounded-xl mb-6 border border-gray-200 professional-card">
+ <h5 class="text-xl font-bold mb-3">Order Summary</h5>
+ <p class="text-lg text-gray-800 mb-1">**Provider:** ${provider.name}</p>
+ <p class="text-lg text-gray-800 mb-1">**Service:** ${appState.currentBooking.serviceName}</p>
+ <p class="text-lg text-gray-800 mb-1">**When:** ${appState.currentBooking.date} at ${appState.currentBooking.time}</p>
+ <p class="text-lg text-gray-800 mb-1">**Phone:** ${appState.currentBooking.phone}</p>
+ <p class="text-lg text-gray-800 mb-4">**Where:** ${appState.currentBooking.location}</p>
+ <div class="border-t pt-3 space-y-1">
+ <div class="flex justify-between text-gray-700"><span>Visiting Charge:</span><span>₹${visitingCharge.toFixed(2)}</span></div>
+ <div class="flex justify-between text-gray-700"><span>Problem Based Charge:</span><span>₹${problemCharge.toFixed(2)}</span></div>
+ <div class="flex justify-between text-gray-700"><span>Taxes & GST (18%):</span><span>₹${taxes.toFixed(2)}</span></div>
+ <div class="flex justify-between font-extrabold text-xl pt-2 border-t mt-2"><span>TOTAL DUE:</span><span class="text-blue-600">₹${total.toFixed(2)}</span></div>
+ </div>
+ </div>
+ <label for="payment-method" class="block text-sm font-medium text-gray-700 mb-2">Select Payment Method</label>
+ <select id="payment-method" required class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:ring-blue-500 focus:border-blue-500">
+ <option>Saved Card (UPI/Card)</option>
+ <option>Pay on Completion (COD)</option>
+ <option>New Payment Method</option>
+ </select>
+ <div class="flex items-center mb-6">
+ <input type="checkbox" id="policy-agree" required class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+ <label for="policy-agree" class="ml-2 text-sm text-gray-600">I agree to the <span class="text-blue-600 hover:underline cursor-pointer">cancellation policy</span> and terms.</label>
+ </div>
+ <div class="flex space-x-4">
+ <button onclick="prevBookingStep()" class="flex-grow bg-gray-300 text-gray-800 py-3 rounded-lg font-bold hover:bg-gray-400 transition duration-300">Back</button>
+ <button onclick="nextBookingStep()" class="flex-grow bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition duration-300">Confirm & Book</button>
+ </div>
+ `;
+ break;
+ case 4:
+ // 🛑 NEW ASYNC LOGIC: Saving to Firebase here
+ const newBooking = {
+  userId: appState.user ? appState.user.uid : 'guest_user',
+  providerName: provider.name,
+  providerId: provider.id,
+  serviceName: appState.currentBooking.serviceName,
+  date: appState.currentBooking.date,
+  time: appState.currentBooking.time,
+  phone: appState.currentBooking.phone,
+  location: appState.currentBooking.location,
+  instructions: appState.currentBooking.instructions,
+  total_price: 280 + (280 * 0.18), // Example calculation
+  status: 'Confirmed',
+  bookedAt: new Date().toISOString()
+ };
 
-  <div>
-   <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-   <ul class="space-y-2 text-sm">
-    <li><a href="#" onclick="navigateTo('home')" class="text-gray-300 hover:text-blue-400">Home</a></li>
-    <li><a href="#" onclick="navigateTo('listings')" class="text-gray-300 hover:text-blue-400">Services</a></li>
-    <li><a href="#" onclick="navigateTo('howitworks')" class="text-gray-300 hover:text-blue-400">Service Flow</a></li>
-    <li><a href="#" onclick="navigateTo('about')" class="text-gray-300 hover:text-blue-400">About Us</a></li>
-   </ul>
-  </div>
+ // Save to Firebase
+ saveBookingToDB(newBooking);
 
-  <div>
-   <h4 class="text-lg font-semibold mb-4">Support</h4>
-   <ul class="space-y-2 text-sm">
-    <li><a href="#" onclick="navigateTo('faq')" class="text-gray-300 hover:text-blue-400">Help & FAQ</a></li>
-    <li><a href="#" onclick="navigateTo('contact')" class="text-gray-300 hover:text-blue-400">Contact Us</a></li>
-    <li><a href="#" class="text-gray-300 hover:text-blue-400">Privacy Policy</a></li>
-    <li><a href="#" class="text-gray-300 hover:text-blue-400">Terms of Service</a></li>
-   </ul>
-  </div>
- </div>
+ // Update local mock data (for dashboard viewing)
+ mockBookings.push({...newBooking, id: mockBookings.length + 101});
 
- <div class="border-t border-gray-700 pt-8 mb-8">
-  <h4 class="text-lg font-semibold mb-4">Get in Touch</h4>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-   <div>
-    <p class="text-gray-300 mb-2"><i class="fas fa-phone mr-2"></i> +91-8882648433</p>
-    <p class="text-gray-300"><i class="fas fa-envelope mr-2"></i> team.oneserviice@gmail.com</p>
-   </div>
-   <div>
-    <p class="text-gray-300 mb-2"><i class="fas fa-map-marker-alt mr-2"></i> NCR, Delhi</p>
-    <p class="text-gray-300">Serving 5+ cities across India</p>
-   </div>
-   <div>
-    <p class="text-gray-300 mb-2">Mon-Sun: 9AM - 9PM IST</p>
-    <p class="text-gray-300">24/7 Emergency Support</p>
-   </div>
-  </div>
- </div>
-
- <div class="text-center border-t border-gray-700 pt-6">
-  <p>&copy; 2025 OneServiice. All rights reserved.</p>
-  <p class="text-sm text-gray-400 mt-2">Designed with love for Indian homes | GSTIN: 27AAFCU1234Q1Z5</p>
- </div>
- </div>
- </footer>
-
- <!-- Utility Scripts -->
- <script>
- // Global App State
- let appState = {
-  isLoggedIn: false,
-  currentPage: 'home',
-  user: null
- };
-
- function toggleMobileMenu() {
-  document.getElementById("mobile-menu").classList.toggle("hidden");
- }
-
- function navigateTo(page) {
-  console.log("Navigating to:", page);
-  appState.currentPage = page;
-  document.getElementById("app-container").innerHTML =
-  `<div class='text-center text-xl font-semibold mt-10 text-gray-600'>${page.toUpperCase()} page coming soon...</div>`;
- }
-
- function handleAuthClick() {
-  if (appState.isLoggedIn) {
-   signOut(window.auth).then(() => alert("You have been signed out."));
-  } else {
-   alert("Login / Signup feature will be added soon.");
-  }
- }
- </script>
-
+ stepContent = `
+ <div class="text-center p-8 bg-green-50 rounded-xl border border-green-300 professional-card">
+ <div class="text-6xl text-green-600 mb-4">✅</div>
+ <h4 class="text-3xl font-bold text-green-800 mb-4">Booking Confirmed!</h4>
+ <p class="text-gray-700 text-lg mb-6">Your order has been successfully logged to our database. You will receive an SMS and email confirmation shortly.</p>
+ <p class="text-xl font-semibold mb-2">${newBooking.serviceName} with ${newBooking.providerName}</p>
+ <p class="text-lg text-gray-600 mb-8">${newBooking.date} at ${newBooking.time}</p>
+ <button onclick="navigateTo('dashboard')" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-300">Go to Dashboard</button>
+ </div>
+ `;
+ break;
+ }
+ return `
+ <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-2xl border border-gray-100 professional-card">
+ <h2 class="text-4xl font-bold text-gray-800 mb-8">Service Booking</h2>
+ <div class="flex justify-between items-center mb-8 relative">
+ ${stepTitles.map((title, index) => `
+ <div class="flex flex-col items-center z-10">
+ <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white transition-all duration-300
+ ${index + 1 <= step ? 'bg-blue-600' : 'bg-gray-300'}">
+ ${index + 1}
+ </div>
+ <span class="text-xs mt-2 text-center hidden sm:block ${index + 1 === step ? 'text-blue-600 font-semibold' : 'text-gray-500'}">${title}</span>
+ </div>
+ `).join('')}
+ <div class="absolute top-5 left-0 right-0 h-1 bg-gray-200 -z-0 mx-8">
+ <div class="h-full bg-blue-600 transition-all duration-500" style="width: ${((step - 1) / (stepTitles.length - 1)) * 100}%"></div>
+ </div>
+ </div>
+ <div class="mt-8">
+ ${stepContent}
+ </div>
+ </div>
+ `;
+ }
+ function nextBookingStep() {
+ const currentStep = appState.currentBooking.step;
+ if (currentStep === 1) {
+ const date = document.getElementById('booking-date').value;
+ const time = document.getElementById('booking-time').value;
+ if (!date || !time) return showModal('Input Required', 'Please select a date and time for your booking.');
+ appState.currentBooking.date = date;
+ appState.currentBooking.time = time;
+ } else if (currentStep === 2) {
+ const phone = document.getElementById('booking-phone').value;
+ const location = document.getElementById('booking-location').value;
+ const instructions = document.getElementById('booking-instructions').value;
+ if (!phone || !location) return showModal('Input Required', 'Please enter your phone number and the complete service address.');
+ 
+ // Save data to appState for next step
+ appState.currentBooking.phone = phone;
+ appState.currentBooking.location = location;
+ appState.currentBooking.instructions = instructions;
+ 
+ } else if (currentStep === 3) {
+ const agreed = document.getElementById('policy-agree').checked;
+ if (!agreed) return showModal('Action Required', 'You must agree to the cancellation policy and terms to proceed.');
+ }
+ appState.currentBooking.step = currentStep + 1;
+ navigateTo('booking');
+ }
+ function prevBookingStep() {
+ appState.currentBooking.step = appState.currentBooking.step - 1;
+ navigateTo('booking');
+ }
+ function renderCustomerDashboard() {
+ const upcoming = mockBookings.filter(b => b.status === 'Confirmed' || b.status === 'Pending');
+ const past = mockBookings.filter(b => b.status === 'Completed');
+ const renderBookingCard = (b) => `
+ <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center professional-card fade-in">
+ <div class="flex-grow mb-4 md:mb-0">
+ <p class="text-xs font-semibold uppercase ${b.status === 'Confirmed' ? 'text-green-600' : 'text-yellow-600'} mb-1">${b.status}</p>
+ <h4 class="text-xl font-bold text-gray-800 mb-1">${b.serviceName}</h4>
+ <p class="text-gray-600 mb-2">with <span class="font-semibold text-blue-600">${b.providerName}</span></p>
+ <p class="text-gray-500 text-sm">${b.date} at ${b.time}</p>
+ </div>
+ <div class="flex flex-col items-start md:items-end space-y-2">
+ <p class="text-2xl font-bold text-gray-800">₹${b.price.toFixed(2)}</p>
+ ${b.status !== 'Completed' ? `
+ <div class="flex space-x-2">
+ <button onclick="showModal('Cancel Booking', 'Are you sure you want to cancel booking #${b.id}? Cancellation fees (max ₹800) may apply.', () => console.log('Booking Cancelled'), true)" class="text-red-500 hover:text-red-700 text-sm font-medium">Cancel</button>
+ <button onclick="showModal('Reschedule Booking', 'Rescheduling booking #${b.id} requires provider approval.', () => {}, false)" class="text-blue-500 hover:text-blue-700 text-sm font-medium">Reschedule</button>
+ </div>
+ ` : (b.rating ? `
+ <div class="flex items-center text-sm text-gray-600">Your Rating: ${getRatingStars(b.rating)}</div>
+ ` : `
+ <button onclick="showModal('Rate Service', 'Thank you for your business! Give ${b.providerName} a 5-star rating.', () => console.log('Rated Service'), false)" class="bg-yellow-400 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-500 transition duration-300">Rate Service</button>
+ `)}
+ </div>
+ </div>
+ `;
+ return `
+ <div class="flex justify-between items-center mb-8">
+ <h2 class="text-4xl font-bold text-gray-800">Hello, ${appState.user.name.split(' ')[0]}!</h2>
+ <button onclick="signOutUser()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">Sign Out</button>
+ </div>
+ <section class="mb-10">
+ <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Upcoming Services (${upcoming.length})</h3>
+ <div class="space-y-4">
+ ${upcoming.length > 0 ? upcoming.map(renderBookingCard).join('') : '<p class="text-gray-500 p-4 bg-white rounded-xl">You have no upcoming bookings.</p>'}
+ </div>
+ </section>
+ <section class="mb-10">
+ <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Past Services (${past.length})</h3>
+ <div class="space-y-4">
+ ${past.length > 0 ? past.map(renderBookingCard).join('') : '<p class="text-gray-500 p-4 bg-white rounded-xl">No completed services yet.</p>'}
+ </div>
+ </section>
+ <section>
+ <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Service Tips</h3>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div class="bg-white p-6 rounded-xl shadow-md professional-card">
+ <h4 class="text-lg font-semibold mb-2">How to Prepare for Your Service</h4>
+ <ul class="text-gray-600 space-y-1">
+ <li>• Clear the work area</li>
+ <li>• Provide access details</li>
+ <li>• Have payment ready</li>
+ </ul>
+ </div>
+ <div class="bg-white p-6 rounded-xl shadow-md professional-card">
+ <h4 class="text-lg font-semibold mb-2">Why Choose OneServiice?</h4>
+ <p class="text-gray-600">100% vetted pros, no hidden fees, and easy rescheduling.</p>
+ </div>
+ </div>
+ </section>
+ `;
+ }
+ function renderTestimonialsPage() {
+ return `
+ <div class="max-w-7xl mx-auto space-y-12">
+ <header class="text-center">
+ <h2 class="text-5xl font-extrabold text-gray-800 mb-4">What Our Customers Say</h2>
+ <p class="text-xl text-gray-600 mb-4">Real stories from happy customers across India. (${testimonials.length} total reviews)</p>
+ </header>
+ <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+ ${testimonials.map(t => `
+ <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 professional-card fade-in">
+ <div class="flex items-center mb-4">
+ <span class="text-yellow-400 text-lg mr-2">${getRatingStars(t.rating)}</span>
+ <span class="text-sm text-gray-500 ml-auto">${t.location}</span>
+ </div>
+ <p class="text-gray-700 mb-4 italic">"${t.text}"</p>
+ <div class="flex items-center">
+ <h4 class="font-bold text-gray-800">${t.name}</h4>
+ <p class="text-sm text-gray-500 ml-2">${t.service}</p>
+ </div>
+ <p class="text-xs text-gray-400 mt-2">${t.date}</p>
+ </div>
+ `).join('')}
+ </section>
+ <div class="text-center">
+ <button onclick="navigateTo('home')" class="bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition duration-300 shadow-lg">
+ Back to Home
+ </button>
+ </div>
+ </div>
+ `;
+ }
+ function renderAboutPage() {
+ return `
+ <div class="max-w-4xl mx-auto space-y-12">
+ <header class="text-center">
+ <h2 class="text-5xl font-extrabold text-gray-800 mb-4">Our Commitment to India</h2>
+ <p class="text-xl text-gray-600">Simplifying home and personal services across the nation.</p>
+ </header>
+ <section class="bg-white p-8 rounded-xl shadow-2xl border-l-4 border-blue-600 professional-card">
+ <h3 class="text-3xl font-bold text-gray-800 mb-4">The OneServiice Vision</h3>
+ <p class="text-gray-700 leading-relaxed mb-4">
+ We founded OneServiice to address the complexity of finding reliable, skilled, and fairly-priced local professionals in India. Our mission is to bridge the trust gap between customers and service providers.
+ From the bustling lanes of **Mumbai** to the tech hubs of **Bangalore** and the heritage cities of **Delhi**, we ensure that high-quality, trustworthy help is just a tap away. We are proud to support local Indian businesses and create opportunities for skilled individuals.
+ </p>
+ <p class="text-gray-700 leading-relaxed">
+ Our platform is built with the Indian user in mind—supporting regional languages, UPI payments, and hyper-local service matching. Join thousands of satisfied customers who have transformed their homes and lives with OneServiice.
+ </p>
+ </section>
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+ <div class="bg-white p-6 rounded-xl shadow-lg border-t-2 border-green-500 professional-card">
+ <span class="text-4xl block mb-3">India</span>
+ <h4 class="font-bold text-xl mb-2">Local Focus</h4>
+ <p class="text-gray-600 text-sm">Dedicated services and fair pricing structured for the Indian economy and local markets.</p>
+ </div>
+ <div class="bg-white p-6 rounded-xl shadow-lg border-t-2 border-yellow-500 professional-card">
+ <span class="text-4xl block mb-3">Check</span>
+ <h4 class="font-bold text-xl mb-2">Verified Talent</h4>
+ <p class="text-gray-600 text-sm">Every professional is background-checked, licensed, and performance-rated by customers.</p>
+ </div>
+ <div class="bg-white p-6 rounded-xl shadow-lg border-t-2 border-red-500 professional-card">
+ <span class="text-4xl block mb-3">Phone</span>
+ <h4 class="font-bold text-xl mb-2">24/7 Support</h4>
+ <p class="text-gray-600 text-sm">Reliable support team available to assist with bookings, conflicts, or emergencies.</p>
+ </div>
+ </div>
+ <section class="bg-gray-50 p-8 rounded-xl">
+ <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">Our Journey</h3>
+ <div class="space-y-4">
+ <div class="flex items-center space-x-4">
+ <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">1</div>
+ <div>
+ <h4 class="font-semibold">Launch in 2024</h4>
+ <p class="text-gray-600">Started with core services in major metros.</p>
+ </div>
+ </div>
+ <div class="flex items-center space-x-4">
+ <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">2</div>
+ <div>
+ <h4 class="font-semibold">Expansion 2025</h4>
+ <p class="text-gray-600">Added 50+ cities and new categories like therapy.</p>
+ </div>
+ </div>
+ <div class="flex items-center space-x-4">
+ <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">3</div>
+ <div>
+ <h4 class="font-semibold">Future Ahead</h4>
+ <p class="text-gray-600">AI matching and more personalized services coming soon.</p>
+ </div>
+ </div>
+ </div>
+ </section>
+ </div>
+ `;
+ }
+ function renderHowItWorksPage() {
+ const steps = [
+ { icon: 'Search', title: 'Search & Select', detail: 'Enter your service need and Pincode. Browse profiles, check ratings, and select the professional that fits your requirements and budget.' },
+ { icon: 'Calendar', title: 'Schedule & Detail', detail: 'Choose your preferred date and time slot. Provide your exact service location and any specific instructions for the professional.' },
+ { icon: 'Check', title: 'Confirm & Relax', detail: 'Review the total cost (in ₹), choose your payment method (UPI, Card, or COD), and confirm your booking. Your pro will arrive on time!' }
+ ];
+ return `
+ <div class="max-w-4xl mx-auto space-y-10">
+ <header class="text-center">
+ <h2 class="text-5xl font-extrabold text-gray-800 mb-4">How OneServiice Works</h2>
+ <p class="text-xl text-gray-600">Booking home services has never been easier in India.</p>
+ </header>
+ <div class="relative flex flex-col items-center mb-12">
+ <div class="hidden md:block absolute h-full w-1 bg-blue-200 left-1/2 transform -translate-x-1/2 top-0 bottom-0"></div>
+ ${steps.map((step, index) => `
+ <div class="w-full md:flex md:justify-center items-center py-6">
+ <div class="md:w-5/12 ${index % 2 === 0 ? 'md:text-right' : 'md:order-2'}">
+ <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100 professional-card fade-in">
+ <h3 class="text-2xl font-bold text-blue-600 mb-2">${step.title}</h3>
+ <p class="text-gray-700">${step.detail}</p>
+ </div>
+ </div>
+ <div class="hidden md:flex md:w-2/12 justify-center">
+ <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-2xl font-bold shadow-xl border-4 border-white">${index + 1}</div>
+ </div>
+ <div class="md:w-5/12 ${index % 2 === 0 ? 'md:order-3' : ''}">
+ <span class="text-5xl block mb-2 md:hidden">${step.icon}</span>
+ <span class="hidden md:inline-block text-5xl">${step.icon}</span>
+ </div>
+ </div>
+ `).join('')}
+ </div>
+ <section class="bg-gray-50 p-8 rounded-xl">
+ <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">Frequently Asked Questions</h3>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div>
+ <h4 class="font-semibold mb-2">What if I need to cancel?</h4>
+ <p class="text-gray-600">Free cancellation up to 24 hours before. After that, a small fee applies.</p>
+ </div>
+ <div>
+ <h4 class="font-semibold mb-2">How do payments work?</h4>
+ <p class="text-gray-600">Secure UPI, card, or COD options. No upfront payment for COD.</p>
+ </div>
+ <div>
+ <h4 class="font-semibold mb-2">Are providers insured?</h4>
+ <p class="text-gray-600">Yes, all our pros carry insurance for your peace of mind.</p>
+ </div>
+ <div>
+ <h4 class="font-semibold mb-2">What cities do you serve?</h4>
+ <p class="text-gray-600">Over 50 cities including metros and Tier-2 towns.</p>
+ </div>
+ </div>
+ </section>
+ <div class="text-center pt-8">
+ <button onclick="navigateTo('listings')" class="bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-green-700 transition duration-300 shadow-lg">
+ Get Started Now!
+ </button>
+ </div>
+ </div>
+ `;
+ }
+ function renderFAQPage() {
+ const faqs = [
+ { question: "How are providers vetted?", answer: "All providers undergo a background check, license verification, and continuous performance review based on customer ratings." },
+ { question: "What is the cancellation policy?", answer: "You can cancel free of charge up to 24 hours before the service time. Cancellations within 24 hours may incur a fee of up to ₹800." },
+ { question: "Is my payment secure?", answer: "Yes, all payments are processed through a secure, encrypted third-party gateway. We accept UPI, Card, and Netbanking payments for your convenience." },
+ { question: "Do I pay GST/Taxes?", answer: "Yes, standard GST is applied to all service charges, and this amount is clearly displayed during the Step 3: Review & Payment stage of the booking process." },
+ { question: "What if the service takes longer than expected?", answer: "For hourly services, the provider is obligated to inform you if additional time is required. Any extra payment will be based on the agreed-upon hourly rate shown on their profile." },
+ { question: "Can I request a female provider?", answer: "Yes, where available, you can specify preferences like gender during the booking process." },
+ { question: "What happens if the provider is late?", answer: "We guarantee on-time arrival or offer a discount. Track your pro in real-time via the app." },
+ { question: "How do I rate a service?", answer: "After completion, you'll receive a prompt to rate and review the provider in your dashboard." },
+ ];
+ return `
+ <div class="max-w-4xl mx-auto space-y-10">
+ <header class="text-center">
+ <h2 class="text-5xl font-extrabold text-gray-800 mb-4">Help Center & FAQs</h2>
+ <p class="text-xl text-gray-600">Quick answers to your most common questions.</p>
+ </header>
+ <div class="space-y-4">
+ ${faqs.map((faq, index) => `
+ <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 professional-card fade-in">
+ <details class="group cursor-pointer">
+ <summary class="flex justify-between items-center font-bold text-lg text-gray-800 focus:outline-none">
+ <span>${faq.question}</span>
+ <svg class="w-5 h-5 ml-2 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+ </summary>
+ <p class="pt-4 text-gray-700 border-t mt-4">${faq.answer}</p>
+ </details>
+ </div>
+ `).join('')}
+ </div>
+ <div class="text-center pt-8">
+ <p class="text-lg text-gray-700 mb-4">Can't find your answer?</p>
+ <button onclick="navigateTo('contact')" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-300">
+ Contact Support
+ </button>
+ </div>
+ </div>
+ `;
+ }
+ function renderContactPage() {
+ return `
+ <div class="max-w-xl mx-auto space-y-8">
+ <header class="text-center">
+ <h2 class="text-4xl font-bold text-gray-800 mb-4">Contact Our Support Team</h2>
+ <p class="text-gray-600 mb-8">Fill out the form below or email us directly at support@oneserviice.in. We're here to help!</p>
+ </header>
+ <div class="bg-white p-8 rounded-xl shadow-2xl border border-gray-100 professional-card">
+ <form onsubmit="event.preventDefault(); showModal('Message Sent!', 'Thank you for reaching out. We will respond to your query within 24 hours.', () => {});">
+ <div class="mb-4">
+ <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+ <input type="text" id="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ </div>
+ <div class="mb-4">
+ <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+ <input type="email" id="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ </div>
+ <div class="mb-4">
+ <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+ <input type="text" id="subject" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+ </div>
+ <div class="mb-6">
+ <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+ <textarea id="message" rows="6" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
+ </div>
+ <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-300">Send Message</button>
+ </form>
+ </div>
+ <div class="bg-gray-50 p-6 rounded-xl text-center professional-card">
+ <h3 class="text-xl font-semibold mb-4">Other Ways to Reach Us</h3>
+ <div class="space-y-2">
+ <p class="text-gray-600">Phone: +91 22-1234-5678 (Mon-Sun, 9AM-9PM)</p>
+ <p class="text-gray-600">WhatsApp: <a href="https://wa.me/919876543210" class="text-blue-600 hover:underline">+91 98765-43210</a></p>
+ <p class="text-gray-600">Live Chat: Available on the app</p>
+ </div>
+ </div>
+ </div>
+ `;
+ }
+ // --- Event Listeners and Initial Load ---
+ document.addEventListener('DOMContentLoaded', () => {
+ document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
+ navigateTo('home');
+ });
+ function toggleMobileMenu() {
+ document.getElementById('mobile-menu').classList.toggle('hidden');
+ }
+ </script>
 </body>
 </html>
