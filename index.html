@@ -49,63 +49,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
-
-    // Firebase Configuration (⚠️ Move to server-side in production)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDbCpfja4Ly7kjNNNqy1L7i81CeAFtCDzU",
-      authDomain: "oneserviice-d0270.firebaseapp.com",
-      projectId: "oneserviice-d0270",
-      databaseURL: "https://oneserviice-d0270-default-rtdb.firebaseio.com",
-      storageBucket: "oneserviice-d0270.firebasestorage.app",
-      messagingSenderId: "591308815657",
-      appId: "1:591308815657:web:aacb2188b2b94c92d24b38",
-      measurementId: "G-K3KKG8R8KN"
-    };
-    window.firebaseApp = initializeApp(firebaseConfig);
-    window.db = getFirestore(window.firebaseApp);
-    window.auth = getAuth(window.firebaseApp);
-    window.rtdb = getDatabase(window.firebaseApp);
-
-    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-    window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-    window.updateProfile = updateProfile;
-    window.signOut = signOut;
-    window.signInAnonymously = signInAnonymously;
-    window.push = push;
-    window.ref = ref;
-    window.set = set;
-
-    // Auth State Listener
-    onAuthStateChanged(window.auth, (user) => {
-      if (user) {
-        appState.isLoggedIn = true;
-        appState.user = {
-          uid: user.uid,
-          name: user.displayName || user.email.split('@')[0],
-          email: user.email,
-          role: 'customer'
-        };
-        console.log("User signed in:", appState.user);
-        document.getElementById('auth-button').textContent = 'Dashboard';
-        if (appState.currentPage === 'login' || appState.currentPage === 'signup') {
-          navigateTo('dashboard');
-        }
-      } else {
-        appState.isLoggedIn = false;
-        appState.user = null;
-        console.log("User signed out");
-        document.getElementById('auth-button').textContent = 'Sign In';
-        if (appState.currentPage === 'dashboard') {
-          navigateTo('home');
-        }
-      }
-    });
-  </script>
 </head>
 <body class="min-h-screen flex flex-col">
   <header class="bg-white shadow-lg sticky top-0 z-40">
@@ -202,7 +145,43 @@
       </div>
     </div>
   </div>
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+    // Firebase Configuration (⚠️ Move to server-side in production for security)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDbCpfja4Ly7kjNNNqy1L7i81CeAFtCDzU",
+      authDomain: "oneserviice-d0270.firebaseapp.com",
+      projectId: "oneserviice-d0270",
+      databaseURL: "https://oneserviice-d0270-default-rtdb.firebaseio.com",
+      storageBucket: "oneserviice-d0270.firebasestorage.app",
+      messagingSenderId: "591308815657",
+      appId: "1:591308815657:web:aacb2188b2b94c92d24b38",
+      measurementId: "G-K3KKG8R8KN"
+    };
+
+    // Initialize Firebase
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getFirestore(firebaseApp);
+    const auth = getAuth(firebaseApp);
+    const rtdb = getDatabase(firebaseApp);
+
+    // Expose globals for onclick handlers (avoid pollution, but necessary for inline onclick)
+    window.auth = auth;
+    window.db = db;
+    window.rtdb = rtdb;
+    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+    window.updateProfile = updateProfile;
+    window.signOut = signOut;
+    window.signInAnonymously = signInAnonymously;
+    window.push = push;
+    window.ref = ref;
+    window.set = set;
+
     // --- Global State and Mock Data ---
     let appState = {
       isLoggedIn: false,
@@ -220,6 +199,7 @@
       },
       user: null
     };
+
     const categories = [
       { id: 'app_elec', name: 'Appliance & Electrical Repair', icon: 'plug' },
       { id: 'plumb', name: 'Plumbing & Leaks', icon: 'water' },
@@ -230,6 +210,7 @@
       { id: 'ac', name: 'AC Repair & Service', icon: 'snowflake' },
       { id: 'paint', name: 'House Painting', icon: 'paint' },
     ];
+
     const category_images = {
       'paint': 'https://blog.75services.com/wp-content/uploads/2023/09/residential-painting-in-visakhapatnam.jpg',
       'carp': 'https://thumbs.dreamstime.com/b/focus-carpenter-young-indian-carpenter-polising-shaping-chariot-using-carpentry-tools-workplace-concept-focus-241193437.jpg',
@@ -240,6 +221,7 @@
       'ac': 'https://4.imimg.com/data4/EV/PQ/MY-25507092/ac-repair-in-agra.jpg',
       'plumb': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdhcSc0pPe34I2PMKMuvRTOvelfkm-AI_qyw&s'
     };
+
     const providers = [
       { id: 1, name: 'Electrical services', categoryId: 'app_elec', price: 80, bio: 'Certified electricians specializing in residential wiring and fault diagnostics across NCR and Delhi.', rating: 4.5, reviews: 120 },
       { id: 11, name: 'General mechanics', categoryId: 'app_elec', price: 80, bio: 'Repair of washing machines, refrigerators, and microwaves at home.', rating: 4.2, reviews: 85 },
@@ -252,11 +234,13 @@
       { id: 9, name: 'AC Experts', categoryId: 'ac', price: 80, bio: 'Specialized AC installation, repair, and maintenance in major cities.', rating: 4.5, reviews: 130 },
       { id: 10, name: 'Painting service', categoryId: 'paint', price: 80, bio: 'Professional interior and exterior painting with paints.', rating: 4.6, reviews: 105 },
     ];
+
     const mockBookings = [
       { id: 101, providerName: 'Electrical services', serviceName: 'Appliance & Electrical Repair', date: '2025-10-25', time: '10:00 AM', status: 'Confirmed', price: 280, rating: 5 },
       { id: 102, providerName: 'Cleaning Services', serviceName: 'Deep House Cleaning', date: '2025-11-05', time: '02:00 PM', status: 'Pending', price: 280, rating: null },
       { id: 103, providerName: 'Plumber service', serviceName: 'Plumbing & Leaks', date: '2025-09-15', time: '09:00 AM', status: 'Completed', price: 280, rating: 4 },
     ];
+
     function generateMockTestimonials(count = 120) {
       const firstNames = ['Ravi', 'Priya', 'Amit', 'Neha', 'Suresh', 'Lata', 'Vikram', 'Meera', 'Rajesh', 'Sunita', 'Karan', 'Anita', 'Arjun', 'Deepa', 'Vikas', 'Shalini', 'Rahul', 'Pooja', 'Sanjay', 'Ritu'];
       const lastNames = ['Kumar', 'Singh', 'Patel', 'Reddy', 'Menon', 'Desai', 'Joshi', 'Nair', 'Gupta', 'Bose', 'Malhotra', 'Sharma', 'Verma', 'Yadav', 'Chopra', 'Das', 'Roy', 'Mishra', 'Agarwal', 'Khan'];
@@ -304,7 +288,7 @@
 
     // --- Utility Functions ---
     function getRatingStars(rating) {
-      if (!rating) return 'No ratings yet';
+      if (!rating) return '<span class="text-gray-300">No ratings yet</span>';
       const fullStars = Math.floor(rating);
       const halfStar = rating % 1 >= 0.5;
       let stars = '';
@@ -320,6 +304,7 @@
       }
       return stars;
     }
+
     function showModal(title, body, onConfirm, showCancel = false) {
       const modalContainer = document.getElementById('modal-container');
       document.getElementById('modal-title').innerText = title;
@@ -338,11 +323,13 @@
       }
       modalContainer.classList.remove('hidden');
     }
+
     async function saveBookingToDB(bookingData) {
       try {
-        const bookingsListRef = window.ref(window.rtdb, 'bookings');
-        const newBookingRef = window.push(bookingsListRef);
-        await window.set(newBookingRef, bookingData);
+        const bookingsListRef = ref(rtdb, 'bookings');
+        const newBookingRef = push(bookingsListRef);
+        await set(newBookingRef, bookingData);
+        console.log("Booking saved successfully to Firebase:", newBookingRef.key);
         showModal('Success', 'Booking saved successfully!', () => {});
         return true;
       } catch (error) {
@@ -358,11 +345,12 @@
       const password = document.getElementById('login-password').value;
       if (!email || !password) return showModal('Input Required', 'Please enter email and password.');
       try {
-        await window.signInWithEmailAndPassword(window.auth, email, password);
+        await signInWithEmailAndPassword(auth, email, password);
       } catch (error) {
         showModal('Login Failed', error.message);
       }
     };
+
     window.signUpUser = async () => {
       const name = document.getElementById('signup-name').value;
       const email = document.getElementById('signup-email').value;
@@ -371,27 +359,30 @@
       if (!name || !email || !password || !confirmPassword) return showModal('Input Required', 'Please fill all fields.');
       if (password !== confirmPassword) return showModal('Error', 'Passwords do not match.');
       try {
-        const userCredential = await window.createUserWithEmailAndPassword(window.auth, email, password);
-        await window.updateProfile(userCredential.user, { displayName: name });
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, { displayName: name });
       } catch (error) {
         showModal('Signup Failed', error.message);
       }
     };
+
     window.signInAnonymouslyFunc = async () => {
       try {
-        await window.signInAnonymously(window.auth);
+        await signInAnonymously(auth);
         navigateTo('home');
       } catch (error) {
         showModal('Error', error.message);
       }
     };
+
     window.signOutUser = async () => {
       try {
-        await window.signOut(window.auth);
+        await signOut(auth);
       } catch (error) {
         showModal('Error', error.message);
       }
     };
+
     function handleAuthClick() {
       if (appState.isLoggedIn) {
         navigateTo('dashboard');
@@ -399,6 +390,34 @@
         navigateTo('login');
       }
     }
+
+    // Auth State Listener
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        appState.isLoggedIn = true;
+        appState.user = {
+          uid: user.uid,
+          name: user.displayName || user.email.split('@')[0],
+          email: user.email,
+          role: 'customer'
+        };
+        console.log("User signed in:", appState.user);
+        const authButton = document.getElementById('auth-button');
+        if (authButton) authButton.textContent = 'Dashboard';
+        if (appState.currentPage === 'login' || appState.currentPage === 'signup') {
+          navigateTo('dashboard');
+        }
+      } else {
+        appState.isLoggedIn = false;
+        appState.user = null;
+        console.log("User signed out");
+        const authButton = document.getElementById('auth-button');
+        if (authButton) authButton.textContent = 'Sign In';
+        if (appState.currentPage === 'dashboard') {
+          navigateTo('home');
+        }
+      }
+    });
 
     // --- Routing and View Rendering ---
     function navigateTo(page, data = {}) {
@@ -416,61 +435,70 @@
         };
       }
       const container = document.getElementById('app-container');
+      if (!container) {
+        console.error('App container not found');
+        return;
+      }
       container.innerHTML = '';
       window.scrollTo(0, 0);
+      let renderedContent = '';
       switch (page) {
         case 'home':
-          container.innerHTML = renderHomePage();
+          renderedContent = renderHomePage();
           break;
         case 'listings':
-          container.innerHTML = renderListingsPage(data.categoryId);
+          renderedContent = renderListingsPage(data.categoryId);
           break;
         case 'profile':
           appState.currentProvider = providers.find(p => p.id === data.providerId);
-          container.innerHTML = renderProviderProfile(appState.currentProvider);
+          renderedContent = renderProviderProfile(appState.currentProvider);
           break;
         case 'booking':
           if (!appState.isLoggedIn) {
             showModal('Login Required', 'Please sign in to book a service.', () => navigateTo('login'));
             return;
           }
-          container.innerHTML = renderBookingSystem();
+          renderedContent = renderBookingSystem();
           break;
         case 'dashboard':
           if (!appState.isLoggedIn) {
             navigateTo('login');
             return;
           }
-          container.innerHTML = renderCustomerDashboard();
+          renderedContent = renderCustomerDashboard();
           break;
         case 'login':
-          container.innerHTML = renderLoginPage();
+          renderedContent = renderLoginPage();
           break;
         case 'signup':
-          container.innerHTML = renderSignupPage();
+          renderedContent = renderSignupPage();
           break;
         case 'about':
-          container.innerHTML = renderAboutPage();
+          renderedContent = renderAboutPage();
           break;
         case 'howitworks':
-          container.innerHTML = renderHowItWorksPage();
+          renderedContent = renderHowItWorksPage();
           break;
         case 'faq':
-          container.innerHTML = renderFAQPage();
+          renderedContent = renderFAQPage();
           break;
         case 'contact':
-          container.innerHTML = renderContactPage();
+          renderedContent = renderContactPage();
           break;
         case 'testimonials':
-          container.innerHTML = renderTestimonialsPage();
+          renderedContent = renderTestimonialsPage();
           break;
         default:
-          container.innerHTML = '<h2>404 Page Not Found</h2>';
+          renderedContent = '<h2>404 Page Not Found</h2>';
       }
+      container.innerHTML = renderedContent;
       container.classList.add('fade-in');
     }
 
-    // --- Page Render Functions ---
+    // Expose navigateTo globally for onclick
+    window.navigateTo = navigateTo;
+
+    // --- Page Render Functions (define all here) ---
     function renderLoginPage() {
       return `
         <div class="max-w-md mx-auto bg-white p-8 rounded-xl shadow-2xl border border-gray-100 professional-card">
@@ -493,12 +521,13 @@
           <div class="mt-4 text-center">
             <button onclick="signInAnonymouslyFunc()" class="text-blue-600 hover:underline text-sm">Continue as Guest</button>
           </div>
-          <div class="mt-4 text-center">
+          <div class="mt-6 text-center">
             <button onclick="navigateTo('home')" class="text-gray-600 hover:underline text-sm">Back to Home</button>
           </div>
         </div>
       `;
     }
+
     function renderSignupPage() {
       return `
         <div class="max-w-md mx-auto bg-white p-8 rounded-xl shadow-2xl border border-gray-100 professional-card">
@@ -532,6 +561,7 @@
         </div>
       `;
     }
+
     function renderHomePage() {
       const randomTestimonials = [];
       const shuffled = [...testimonials].sort(() => 0.5 - Math.random());
@@ -583,7 +613,8 @@
                   </div>
                   <p class="text-sm sm:text-lg font-semibold text-gray-800 leading-tight">${c.name}</p>
                 </div>
-              `}).join('')}
+              `;
+            }).join('')}
           </div>
         </section>
         <section class="mb-12">
@@ -613,6 +644,7 @@
         </section>
       `;
     }
+
     function renderListingsPage(categoryId) {
       const filteredProviders = categoryId ? providers.filter(p => p.categoryId === categoryId) : providers;
       const category = categories.find(c => c.id === categoryId);
@@ -657,7 +689,7 @@
                   <p class="text-blue-600 font-semibold mb-2">${categories.find(c => c.id === p.categoryId).name}</p>
                   <div class="flex items-center text-sm text-gray-600 mb-3">
                     <span class="mr-2">${getRatingStars(p.rating)}</span>
-                    <span class="font-medium">${p.rating} (${p.reviews} reviews)</span>
+                    <span class="font-medium">${p.rating || 0} (${p.reviews || 0} reviews)</span>
                   </div>
                   <p class="text-gray-500 hidden sm:block">${p.bio.substring(0, 80)}...</p>
                 </div>
@@ -676,6 +708,7 @@
         </div>
       `;
     }
+
     function renderProviderProfile(provider) {
       if (!provider) return '<div class="text-center text-red-500">Provider not found.</div>';
       const category = categories.find(c => c.id === provider.categoryId);
@@ -688,13 +721,13 @@
           <div class="lg:col-span-2 space-y-8">
             <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-600 professional-card">
               <div class="flex items-center space-x-6">
-                <img src="https://placehold.co/100x100/3b82f6/ffffff?text=${provider.name.charAt(0)}" onerror="this.src='https://placehold.co/100x100/3b82f6/ffffff?text=${provider.name.charAt(0)}'; this.onerror=null;" class="w-24 h-24 rounded-full object-cover shadow-md">
+                <img src="https://placehold.co/100x100/3b82f6/ffffff?text=${provider.name.charAt(0)}" class="w-24 h-24 rounded-full object-cover shadow-md">
                 <div>
                   <h2 class="text-3xl font-bold text-gray-800">${provider.name}</h2>
                   <p class="text-xl font-semibold text-blue-600">${category ? category.name : 'Service'} Specialist</p>
                   <div class="flex items-center mt-2">
                     <span class="text-yellow-400 text-lg mr-1">${getRatingStars(provider.rating)}</span>
-                    <span class="text-gray-700 font-medium">(${provider.reviews} reviews)</span>
+                    <span class="text-gray-700 font-medium">(${provider.reviews || 0} reviews)</span>
                     <span class="ml-4 text-sm text-green-600 font-semibold bg-green-100 px-2 py-0.5 rounded-full">Verified</span>
                   </div>
                 </div>
@@ -719,7 +752,7 @@
               </div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-lg professional-card">
-              <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Customer Reviews (${provider.reviews})</h3>
+              <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Customer Reviews (${provider.reviews || 0})</h3>
               <div class="space-y-4">
                 ${mockReviews.map(r => `
                   <div class="border-b pb-4 last:border-b-0 fade-in">
@@ -732,7 +765,7 @@
                   </div>
                 `).join('')}
               </div>
-              <button class="mt-4 text-blue-600 hover:underline font-medium">Read All ${provider.reviews} Reviews</button>
+              <button class="mt-4 text-blue-600 hover:underline font-medium">Read All ${provider.reviews || 0} Reviews</button>
             </div>
           </div>
           <div class="lg:col-span-1">
@@ -752,7 +785,8 @@
         </div>
       `;
     }
-    function startBooking(providerId, serviceName) {
+
+    window.startBooking = function(providerId, serviceName) {
       if (!appState.isLoggedIn) {
         showModal('Login Required', 'Please sign in to book a service.', () => navigateTo('login'));
         return;
@@ -768,7 +802,8 @@
         phone: ''
       };
       navigateTo('booking');
-    }
+    };
+
     function renderBookingSystem() {
       const step = appState.currentBooking.step;
       const provider = providers.find(p => p.id === appState.currentBooking.providerId);
@@ -896,7 +931,8 @@
         </div>
       `;
     }
-    function nextBookingStep() {
+
+    window.nextBookingStep = function() {
       const currentStep = appState.currentBooking.step;
       if (currentStep === 1) {
         const date = document.getElementById('booking-date').value;
@@ -919,11 +955,13 @@
       }
       appState.currentBooking.step = currentStep + 1;
       navigateTo('booking');
-    }
-    function prevBookingStep() {
+    };
+
+    window.prevBookingStep = function() {
       appState.currentBooking.step = appState.currentBooking.step - 1;
       navigateTo('booking');
-    }
+    };
+
     function renderCustomerDashboard() {
       const upcoming = mockBookings.filter(b => b.status === 'Confirmed' || b.status === 'Pending');
       const past = mockBookings.filter(b => b.status === 'Completed');
@@ -983,4 +1021,275 @@
               <p class="text-gray-600">100% vetted pros, no hidden fees, and easy rescheduling.</p>
             </div>
           </div>
-       
+        </section>
+      `;
+    }
+
+    function renderTestimonialsPage() {
+      return `
+        <div class="max-w-7xl mx-auto space-y-12">
+          <header class="text-center">
+            <h2 class="text-5xl font-extrabold text-gray-800 mb-4">What Our Customers Say</h2>
+            <p class="text-xl text-gray-600 mb-4">Real stories from happy customers across India. (${testimonials.length} total reviews)</p>
+          </header>
+          <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${testimonials.map(t => `
+              <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 professional-card fade-in">
+                <div class="flex items-center mb-4">
+                  <span class="text-yellow-400 text-lg mr-2">${getRatingStars(t.rating)}</span>
+                  <span class="text-sm text-gray-500 ml-auto">${t.location}</span>
+                </div>
+                <p class="text-gray-700 mb-4 italic">"${t.text}"</p>
+                <div class="flex items-center">
+                  <h4 class="font-bold text-gray-800">${t.name}</h4>
+                  <p class="text-sm text-gray-500 ml-2">${t.service}</p>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">${t.date}</p>
+              </div>
+            `).join('')}
+          </section>
+          <div class="text-center">
+            <button onclick="navigateTo('home')" class="bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition duration-300 shadow-lg">
+              Back to Home
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAboutPage() {
+      return `
+        <div class="max-w-4xl mx-auto space-y-12">
+          <header class="text-center">
+            <h2 class="text-5xl font-extrabold text-gray-800 mb-4">Our Commitment to India</h2>
+            <p class="text-xl text-gray-600">Simplifying home and personal services across the nation.</p>
+          </header>
+          <section class="bg-white p-8 rounded-xl shadow-2xl border-l-4 border-blue-600 professional-card">
+            <h3 class="text-3xl font-bold text-gray-800 mb-4">The OneServiice Vision</h3>
+            <p class="text-gray-700 leading-relaxed mb-4">
+              We founded OneServiice to address the complexity of finding reliable, skilled, and fairly-priced local professionals in India. Our mission is to bridge the trust gap between customers and service providers.
+              From the bustling lanes of **Mumbai** to the tech hubs of **Bangalore** and the heritage cities of **Delhi**, we ensure that high-quality, trustworthy help is just a tap away. We are proud to support local Indian businesses and create opportunities for skilled individuals.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+              Our platform is built with the Indian user in mind—supporting regional languages, UPI payments, and hyper-local service matching. Join thousands of satisfied customers who have transformed their homes and lives with OneServiice.
+            </p>
+          </section>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div class="bg-white p-6 rounded-xl shadow-lg border-t-2 border-green-500 professional-card">
+              <span class="text-4xl block mb-3">India</span>
+              <h4 class="font-bold text-xl mb-2">Local Focus</h4>
+              <p class="text-gray-600 text-sm">Dedicated services and fair pricing structured for the Indian economy and local markets.</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border-t-2 border-yellow-500 professional-card">
+              <span class="text-4xl block mb-3">Check</span>
+              <h4 class="font-bold text-xl mb-2">Verified Talent</h4>
+              <p class="text-gray-600 text-sm">Every professional is background-checked, licensed, and performance-rated by customers.</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border-t-2 border-red-500 professional-card">
+              <span class="text-4xl block mb-3">Phone</span>
+              <h4 class="font-bold text-xl mb-2">24/7 Support</h4>
+              <p class="text-gray-600 text-sm">Reliable support team available to assist with bookings, conflicts, or emergencies.</p>
+            </div>
+          </div>
+          <section class="bg-gray-50 p-8 rounded-xl">
+            <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">Our Journey</h3>
+            <div class="space-y-4">
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                <div>
+                  <h4 class="font-semibold">Launch in 2024</h4>
+                  <p class="text-gray-600">Started with core services in major metros.</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">2</div>
+                <div>
+                  <h4 class="font-semibold">Expansion 2025</h4>
+                  <p class="text-gray-600">Added 50+ cities and new categories like therapy.</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">3</div>
+                <div>
+                  <h4 class="font-semibold">Future Ahead</h4>
+                  <p class="text-gray-600">AI matching and more personalized services coming soon.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function renderHowItWorksPage() {
+      const steps = [
+        { icon: 'Search', title: 'Search & Select', detail: 'Enter your service need and Pincode. Browse profiles, check ratings, and select the professional that fits your requirements and budget.' },
+        { icon: 'Calendar', title: 'Schedule & Detail', detail: 'Choose your preferred date and time slot. Provide your exact service location and any specific instructions for the professional.' },
+        { icon: 'Check', title: 'Confirm & Relax', detail: 'Review the total cost (in ₹), choose your payment method (UPI, Card, or COD), and confirm your booking. Your pro will arrive on time!' }
+      ];
+      return `
+        <div class="max-w-4xl mx-auto space-y-10">
+          <header class="text-center">
+            <h2 class="text-5xl font-extrabold text-gray-800 mb-4">How OneServiice Works</h2>
+            <p class="text-xl text-gray-600">Booking home services has never been easier in India.</p>
+          </header>
+          <div class="relative flex flex-col items-center mb-12">
+            <div class="hidden md:block absolute h-full w-1 bg-blue-200 left-1/2 transform -translate-x-1/2 top-0 bottom-0"></div>
+            ${steps.map((step, index) => `
+              <div class="w-full md:flex md:justify-center items-center py-6">
+                <div class="md:w-5/12 ${index % 2 === 0 ? 'md:text-right' : 'md:order-2'}">
+                  <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100 professional-card fade-in">
+                    <h3 class="text-2xl font-bold text-blue-600 mb-2">${step.title}</h3>
+                    <p class="text-gray-700">${step.detail}</p>
+                  </div>
+                </div>
+                <div class="hidden md:flex md:w-2/12 justify-center">
+                  <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-2xl font-bold shadow-xl border-4 border-white">${index + 1}</div>
+                </div>
+                <div class="md:w-5/12 ${index % 2 === 0 ? 'md:order-3' : ''}">
+                  <span class="text-5xl block mb-2 md:hidden">${step.icon}</span>
+                  <span class="hidden md:inline-block text-5xl">${step.icon}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <section class="bg-gray-50 p-8 rounded-xl">
+            <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">Frequently Asked Questions</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 class="font-semibold mb-2">What if I need to cancel?</h4>
+                <p class="text-gray-600">Free cancellation up to 24 hours before. After that, a small fee applies.</p>
+              </div>
+              <div>
+                <h4 class="font-semibold mb-2">How do payments work?</h4>
+                <p class="text-gray-600">Secure UPI, card, or COD options. No upfront payment for COD.</p>
+              </div>
+              <div>
+                <h4 class="font-semibold mb-2">Are providers insured?</h4>
+                <p class="text-gray-600">Yes, all our pros carry insurance for your peace of mind.</p>
+              </div>
+              <div>
+                <h4 class="font-semibold mb-2">What cities do you serve?</h4>
+                <p class="text-gray-600">Over 50 cities including metros and Tier-2 towns.</p>
+              </div>
+            </div>
+          </section>
+          <div class="text-center pt-8">
+            <button onclick="navigateTo('listings')" class="bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-green-700 transition duration-300 shadow-lg">
+              Get Started Now!
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFAQPage() {
+      const faqs = [
+        { question: "How are providers vetted?", answer: "All providers undergo a background check, license verification, and continuous performance review based on customer ratings." },
+        { question: "What is the cancellation policy?", answer: "You can cancel free of charge up to 24 hours before the service time. Cancellations within 24 hours may incur a fee of up to ₹800." },
+        { question: "Is my payment secure?", answer: "Yes, all payments are processed through a secure, encrypted third-party gateway. We accept UPI, Card, and Netbanking payments for your convenience." },
+        { question: "Do I pay GST/Taxes?", answer: "Yes, standard GST is applied to all service charges, and this amount is clearly displayed during the Step 3: Review & Payment stage of the booking process." },
+        { question: "What if the service takes longer than expected?", answer: "For hourly services, the provider is obligated to inform you if additional time is required. Any extra payment will be based on the agreed-upon hourly rate shown on their profile." },
+        { question: "Can I request a female provider?", answer: "Yes, where available, you can specify preferences like gender during the booking process." },
+        { question: "What happens if the provider is late?", answer: "We guarantee on-time arrival or offer a discount. Track your pro in real-time via the app." },
+        { question: "How do I rate a service?", answer: "After completion, you'll receive a prompt to rate and review the provider in your dashboard." },
+      ];
+      return `
+        <div class="max-w-4xl mx-auto space-y-10">
+          <header class="text-center">
+            <h2 class="text-5xl font-extrabold text-gray-800 mb-4">Help Center & FAQs</h2>
+            <p class="text-xl text-gray-600">Quick answers to your most common questions.</p>
+          </header>
+          <div class="space-y-4">
+            ${faqs.map((faq, index) => `
+              <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 professional-card fade-in">
+                <details class="group cursor-pointer">
+                  <summary class="flex justify-between items-center font-bold text-lg text-gray-800 focus:outline-none">
+                    <span>${faq.question}</span>
+                    <svg class="w-5 h-5 ml-2 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </summary>
+                  <p class="pt-4 text-gray-700 border-t mt-4">${faq.answer}</p>
+                </details>
+              </div>
+            `).join('')}
+          </div>
+          <div class="text-center pt-8">
+            <p class="text-lg text-gray-700 mb-4">Can't find your answer?</p>
+            <button onclick="navigateTo('contact')" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-300">
+              Contact Support
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderContactPage() {
+      return `
+        <div class="max-w-xl mx-auto space-y-8">
+          <header class="text-center">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Contact Our Support Team</h2>
+            <p class="text-gray-600 mb-8">Fill out the form below or email us directly at support@oneserviice.in. We're here to help!</p>
+          </header>
+          <div class="bg-white p-8 rounded-xl shadow-2xl border border-gray-100 professional-card">
+            <form onsubmit="event.preventDefault(); showModal('Message Sent!', 'Thank you for reaching out. We will respond to your query within 24 hours.', () => {});">
+              <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input type="text" id="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" id="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div class="mb-4">
+                <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                <input type="text" id="subject" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div class="mb-6">
+                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                <textarea id="message" rows="6" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
+              </div>
+              <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-300">Send Message</button>
+            </form>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-xl text-center professional-card">
+            <h3 class="text-xl font-semibold mb-4">Other Ways to Reach Us</h3>
+            <div class="space-y-2">
+              <p class="text-gray-600">Phone: +91 22-1234-5678 (Mon-Sun, 9AM-9PM)</p>
+              <p class="text-gray-600">WhatsApp: <a href="https://wa.me/919876543210" class="text-blue-600 hover:underline">+91 98765-43210</a></p>
+              <p class="text-gray-600">Live Chat: Available on the app</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Expose other functions globally for onclick
+    window.handleAuthClick = handleAuthClick;
+    window.signInUser = window.signInUser;
+    window.signUpUser = window.signUpUser;
+    window.signInAnonymouslyFunc = window.signInAnonymouslyFunc;
+    window.signOutUser = window.signOutUser;
+    window.nextBookingStep = window.nextBookingStep;
+    window.prevBookingStep = window.prevBookingStep;
+    window.startBooking = window.startBooking;
+
+    // --- Event Listeners and Initial Load ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', toggleMobileMenu);
+      }
+      navigateTo('home');
+    });
+
+    function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (mobileMenu) {
+        mobileMenu.classList.toggle('hidden');
+      }
+    }
+
+    window.toggleMobileMenu = toggleMobileMenu;
+  </script>
+</body>
+</html>
