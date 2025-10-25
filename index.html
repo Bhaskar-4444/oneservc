@@ -562,10 +562,10 @@
    <div onclick="navigateTo('listings', {categoryId: '${c.id}'})" class="text-center p-4 sm:p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl hover:border-blue-500 border-2 border-transparent transition-all duration-300 cursor-pointer group transform hover:-translate-y-2 professional-card fade-in">
      <div class="w-full aspect-square mx-auto mb-4 overflow-hidden rounded-2xl shadow-lg">
        <img 
-         src="${category_images[c.id]}" 
+         src="${category_images[c.id] || `https://placehold.co/192x192/0a60ff/ffffff?text=${c.name.split(' ').map(n=>n.charAt(0)).join('')}`}" 
          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
          alt="${c.name}" 
-         onerror="this.src='https://via.placeholder.com/192?text=${c.name.slice(0,2).toUpperCase()}'; this.onerror=null;"
+         onerror="this.src='https://placehold.co/192x192/0a60ff/ffffff?text=${c.name.split(' ').map(n=>n.charAt(0)).join('')}'; this.onerror=null;"
        >
      </div>
      <p class="text-sm sm:text-lg font-semibold text-gray-800 leading-tight">${c.name}</p>
