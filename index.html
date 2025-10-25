@@ -53,56 +53,61 @@
    to { opacity: 1; transform: translateY(0); }
  }
  </style>
- <script type="module">
- import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
- // Import all required auth functions
- import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
- import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
- // Firebase Configuration
- const firebaseConfig = {
-  apiKey: "AIzaSyDbCpfja4Ly7kjNNNqy1L7i81CeAFtCDzU",
-  authDomain: "oneserviice-d0270.firebaseapp.com",
-  projectId: "oneserviice-d0270",
-  storageBucket: "oneserviice-d0270.firebasestorage.app",
-  messagingSenderId: "591308815657",
-  appId: "1:591308815657:web:aacb2188b2b94c92d24b38",
-  measurementId: "G-K3KKG8R8KN"
- };
- window.firebaseApp = initializeApp(firebaseConfig);
- window.db = getFirestore(window.firebaseApp);
- window.auth = getAuth(window.firebaseApp);
- // FIX 1: Expose necessary Firebase auth functions to the global window object.
- window.signInWithEmailAndPassword = signInWithEmailAndPassword;
- window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
- window.updateProfile = updateProfile;
- window.signOut = signOut;
- window.signInAnonymously = signInAnonymously;
- // Auth State Listener
- onAuthStateChanged(window.auth, (user) => {
- if (user) {
- appState.isLoggedIn = true;
- appState.user = {
- uid: user.uid,
- name: user.displayName || user.email.split('@')[0],
- email: user.email,
- role: 'customer'
- };
- console.log("User signed in:", appState.user);
- // FIX 2: Navigate to dashboard ONLY if the user is currently on the auth pages.
- if (appState.currentPage === 'login' || appState.currentPage === 'signup') {
- navigateTo('dashboard');
- }
- } else {
- appState.isLoggedIn = false;
- appState.user = null;
- console.log("User signed out");
- // If the user logs out from the dashboard, redirect them to home/login.
- if (appState.currentPage === 'dashboard') {
- navigateTo('home');
- }
- }
- });
- </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDbCpfja4Ly7kjNNNqy1L7i81CeAFtCDzU",
+    authDomain: "oneserviice-d0270.firebaseapp.com",
+    databaseURL: "https://oneserviice-d0270-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "oneserviice-d0270",
+    storageBucket: "oneserviice-d0270.firebasestorage.app",
+    messagingSenderId: "591308815657",
+    appId: "1:591308815657:web:aacb2188b2b94c92d24b38",
+    measurementId: "G-K3KKG8R8KN"
+  };
+
+  // Initialize Firebase
+  window.firebaseApp = initializeApp(firebaseConfig);
+  window.db = getFirestore(window.firebaseApp);
+  window.auth = getAuth(window.firebaseApp);
+  window.realtimeDb = getDatabase(window.firebaseApp); // Initialize Realtime Database
+
+  // Expose Firebase auth functions to the global window object
+  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+  window.updateProfile = updateProfile;
+  window.signOut = signOut;
+  window.signInAnonymously = signInAnonymously;
+
+  // Auth State Listener
+  onAuthStateChanged(window.auth, (user) => {
+    if (user) {
+      appState.isLoggedIn = true;
+      appState.user = {
+        uid: user.uid,
+        name: user.displayName || user.email.split('@')[0],
+        email: user.email,
+        role: 'customer'
+      };
+      console.log("User signed in:", appState.user);
+      if (appState.currentPage === 'login' || appState.currentPage === 'signup') {
+        navigateTo('dashboard');
+      }
+    } else {
+      appState.isLoggedIn = false;
+      appState.user = null;
+      console.log("User signed out");
+      if (appState.currentPage === 'dashboard') {
+        navigateTo('home');
+      }
+    }
+  });
+</script>
 </head>
 <body class="min-h-screen flex flex-col">
  <header class="bg-white shadow-lg sticky top-0 z-40">
