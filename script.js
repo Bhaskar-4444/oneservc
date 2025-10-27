@@ -205,17 +205,8 @@ function handleAuthClick() {
 
 // --- Routing and View Rendering ---
 
-// --- Routing and View Rendering ---
 function navigateTo(page, data = {}) {
-    // 1. Determine the path and update the browser history (New code for Back Button)
-    const path = page === 'home' ? '/' : `/${page}`;
-    history.pushState({ page: page, data: data }, null, path); 
-
-    // 2. Original state updates start here
     appState.currentPage = page;
-    // Reset booking flow on non-booking pages
-    if (page !== 'booking') {
-// ... The rest of your existing function code remains here ...
     // Reset booking flow on non-booking pages
     if (page !== 'booking') {
         appState.currentBooking = {
@@ -1089,97 +1080,10 @@ function renderContactPage() {
     `;
 }
 
-// --- History API Event Listener Logic (NEW CODE) ---
-
-// This function handles both initial page load AND back/forward button clicks
-function handleLocationChange() {
-    // Check if the current history state has the data we pushed earlier
-    if (history.state && history.state.page) {
-        // Use the saved state to navigate without pushing a new history entry
-        // We call the rest of the original navigateTo logic directly here:
-        const page = history.state.page;
-        const data = history.state.data;
-        appState.currentPage = page;
-        
-        const container = document.getElementById('app-container');
-        container.innerHTML = '';
-        window.scrollTo(0, 0); 
-        
-        // This is a condensed version of the switch statement logic from navigateTo
-        switch (page) {
-            case 'home':
-                container.innerHTML = renderHomePage();
-                break;
-            case 'listings':
-                container.innerHTML = renderListingsPage(data.categoryId);
-                break;
-            case 'profile':
-                appState.currentProvider = providers.find(p => p.id === data.providerId);
-                container.innerHTML = renderProviderProfile(appState.currentProvider);
-                break;
-            case 'booking':
-                 if (!appState.isLoggedIn) {
-                    showModal('Login Required', 'Please sign in to book a service.', () => navigateTo('login'));
-                    return;
-                }
-                container.innerHTML = renderBookingSystem();
-                break;
-            case 'dashboard':
-                 if (!appState.isLoggedIn) {
-                    navigateTo('login');
-                    return;
-                }
-                container.innerHTML = renderCustomerDashboard();
-                break;
-            case 'login':
-                container.innerHTML = renderLoginPage();
-                break;
-            case 'signup':
-                container.innerHTML = renderSignupPage();
-                break;
-            case 'about':
-                container.innerHTML = renderAboutPage();
-                break;
-            case 'howitworks':
-                container.innerHTML = renderHowItWorksPage();
-                break;
-            case 'faq':
-                container.innerHTML = renderFAQPage();
-                break;
-            case 'contact':
-                container.innerHTML = renderContactPage();
-                break;
-            case 'testimonials':
-                container.innerHTML = renderTestimonialsPage();
-                break;
-            default:
-                container.innerHTML = '<h2>404 Page Not Found</h2>';
-        }
-
-        // Add fade-in animation to new content
-        container.classList.add('fade-in');
-        
-    } else {
-        // Fallback for direct URL access (e.g., /listings) or first load where state is null
-        const path = window.location.pathname.replace(/^\/|\/$/g, '');
-        const page = path || 'home';
-        
-        // The first time a page is loaded, we use replaceState, not pushState.
-        // This also ensures the initial load from a bookmark works.
-        history.replaceState({ page: page, data: {} }, null, window.location.pathname);
-        navigateTo(page, {});
-    }
-}
-
-// Attach the listener for browser back/forward button clicks
-window.addEventListener('popstate', handleLocationChange);
-
-// --- Event Listeners and Initial Load ---
-// --- Event Listeners and Initial Load ---
 // --- Event Listeners and Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
-    handleLocationChange(); // <--- CALL THE NEW HANDLER INSTEAD
+    navigateTo('home');
 });
 
 function toggleMobileMenu() {
