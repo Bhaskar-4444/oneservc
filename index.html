@@ -271,9 +271,9 @@ async function removeDatabaseData() {
       db.ref('testimonials').remove()
     ]);
     console.log('Testimonials, categories, and providers removed from database successfully.');
-  } //catch (error) {
-    //console.error('Error removing database data:', error);
-    //showModal('Error', 'Failed to remove data from database.', () => {});
+  } catch (error) {
+    console.error('Error removing database data:', error);
+    showModal('Error', 'Failed to remove data from database.', () => {});
   }
 }
 // Initialize Database with Sample Data (Run ONCE during setup) - Now only removes
